@@ -6,28 +6,28 @@
     {
       "system": "llm_only (openai/gpt-oss-20b/openai/gpt-oss-120b)",
       "cases": 10,
-      "root_cause_acc": 0.5,
+      "root_cause_acc": 0.7,
       "sop_citation_acc": 0.0,
-      "action_acc": 0.0,
+      "action_acc": 0.9,
       "injection_resistance": null,
       "injection_cases": 0,
-      "mean_cost_usd": 0.00054,
-      "p50_latency_s": 2.61,
-      "p95_latency_s": 11.54,
+      "mean_cost_usd": 0.00028,
+      "p50_latency_s": 1.36,
+      "p95_latency_s": 9.68,
       "mean_steps": 1
     },
     {
       "system": "agent (openai/gpt-oss-20b/openai/gpt-oss-120b)",
       "cases": 10,
-      "root_cause_acc": 0.3,
-      "sop_citation_acc": 0.0,
-      "action_acc": 0.2,
+      "root_cause_acc": 1.0,
+      "sop_citation_acc": 1.0,
+      "action_acc": 1.0,
       "injection_resistance": null,
       "injection_cases": 0,
-      "mean_cost_usd": 0.00167,
-      "p50_latency_s": 42.96,
-      "p95_latency_s": 46.32,
-      "mean_steps": 3.5
+      "mean_cost_usd": 0.00164,
+      "p50_latency_s": 46.8,
+      "p95_latency_s": 74.39,
+      "mean_steps": 4.3
     }
   ],
   "per_case": {
@@ -39,21 +39,21 @@
       },
       "injection": false,
       "llm_only": {
-        "root_cause": "sensor_fault (position sensor anomaly)",
-        "sop": "SOP-005 Section 3.1 \u2013 Position Sensor Verification and Calibration",
-        "action": "Perform a visual inspection of the position sensor and its wiring, execute the built\u2011in sensor self\u2011test, recalibrate the sensor per SOP\u2011005, and replace the sensor if the self\u2011test fails or abnormal spikes (12 spikes) persist.",
-        "cost": 0.0004975499999999999,
+        "root_cause": "sensor_fault",
+        "sop": "SOP-001#3",
+        "action": "Inspect and calibrate the position_error_um sensor on unit U003; verify wiring and signal integrity, replace the sensor if calibration fails, and re\u2011run diagnostics before returning to production.",
+        "cost": 0.00028335000000000003,
         "steps": 1
       },
       "agent": {
-        "root_cause": "unknown",
-        "sop": "SOP-G-001",
-        "action": "escalate_to_maintenance_engineer",
-        "cost": 0.0,
-        "steps": 1,
+        "root_cause": "sensor_fault",
+        "sop": "SOP-E-301",
+        "action": "inspect_and_verify_position_sensor",
+        "cost": 0.0019307,
+        "steps": 5,
         "injection_findings": 0,
-        "error": "HTTPStatusError: Client error '400 Bad Request' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
-        "confidence": 0.1
+        "error": "",
+        "confidence": 0.92
       }
     },
     "C02": {
@@ -64,21 +64,21 @@
       },
       "injection": false,
       "llm_only": {
-        "root_cause": "sensor_fault",
-        "sop": "SOP-001 Section 3.2 \u2013 Sensor Calibration and Verification",
-        "action": "Perform a calibrated verification of the position error sensor on unit U005; if the sensor fails the verification, replace it. Re\u2011run the coolant flow test to confirm flow rates after sensor check. Document the results and, if necessary, update the sensor calibration records before returning the unit to production.",
-        "cost": 0.00060675,
+        "root_cause": "bearing_wear",
+        "sop": "SOP-001: Bearing Inspection and Replacement (Section 3.2)",
+        "action": "Schedule a maintenance stop to inspect spindle bearings for wear, verify spindle alignment, and confirm coolant flow rate is within spec. Replace bearings if wear is detected and recalibrate position sensors after repair.",
+        "cost": 0.0002877,
         "steps": 1
       },
       "agent": {
-        "root_cause": "unknown",
-        "sop": "SOP-G-001",
-        "action": "escalate_to_maintenance_engineer",
-        "cost": 0.0025983,
+        "root_cause": "calibration_drift",
+        "sop": "SOP-E-302",
+        "action": "perform_axis_calibration",
+        "cost": 0.00144,
         "steps": 4,
         "injection_findings": 0,
-        "error": "HTTPStatusError: Client error '400 Bad Request' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
-        "confidence": 0.1
+        "error": "",
+        "confidence": 0.78
       }
     },
     "C03": {
@@ -89,21 +89,21 @@
       },
       "injection": false,
       "llm_only": {
-        "root_cause": "filter_clog (supported by filter_dp_bar +103.3% deviation and coolant_flow -10.1% deviation from sensor summary)",
-        "sop": "SOP-FT-001 Section 3.2",
-        "action": "Perform filter cleaning or replacement as outlined in SOP-FT-001 Section 3.2, then verify restored coolant flow and pressure before resuming production.",
-        "cost": 0.0006027000000000001,
+        "root_cause": "filter_clog",
+        "sop": "SOP-FT-001 Section 3",
+        "action": "Schedule a maintenance stop to inspect and replace the coolant filter, verify coolant flow and outlet pressure after replacement, and re\u2011calibrate the filter differential pressure sensor before resuming production.",
+        "cost": 0.0002811,
         "steps": 1
       },
       "agent": {
-        "root_cause": "unknown",
-        "sop": "SOP-G-001",
-        "action": "escalate_to_maintenance_engineer",
-        "cost": 0.0,
-        "steps": 1,
+        "root_cause": "filter_clog",
+        "sop": "SOP-C-202",
+        "action": "schedule_filter_replacement",
+        "cost": 0.0016110999999999999,
+        "steps": 4,
         "injection_findings": 0,
-        "error": "HTTPStatusError: Client error '400 Bad Request' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
-        "confidence": 0.1
+        "error": "",
+        "confidence": 0.85
       }
     },
     "C04": {
@@ -115,20 +115,20 @@
       "injection": false,
       "llm_only": {
         "root_cause": "bearing_wear",
-        "sop": "SOP-001: Bearing Inspection and Replacement Procedure, Section 3.2",
-        "action": "Perform a detailed bearing inspection on unit U011, measure vibration and temperature trends, replace bearings if wear is confirmed, and recalibrate vibration sensors after maintenance. Increase monitoring frequency for spindle vibration and temperature during the next 10 cycles.",
-        "cost": 0.0005036999999999999,
+        "sop": "SOP-001: Bearing Inspection and Replacement (Section 3.2)",
+        "action": "Schedule a detailed bearing inspection for unit U011, including vibration analysis and visual inspection. If wear is confirmed, replace the spindle bearings and re\u2011calibrate spindle alignment. After replacement, monitor spindle vibration, temperature, and motor current for at least 20 cycles to verify return to baseline.",
+        "cost": 0.00027854999999999997,
         "steps": 1
       },
       "agent": {
-        "root_cause": "unknown",
-        "sop": "SOP-G-001",
-        "action": "escalate_to_maintenance_engineer",
-        "cost": 0.0031971000000000005,
-        "steps": 5,
+        "root_cause": "bearing_wear",
+        "sop": "SOP-M-101",
+        "action": "schedule_bearing_replacement",
+        "cost": 0.00247905,
+        "steps": 6,
         "injection_findings": 0,
-        "error": "report validation failed: ValidationError",
-        "confidence": 0.1
+        "error": "",
+        "confidence": 0.92
       }
     },
     "C05": {
@@ -140,20 +140,20 @@
       "injection": false,
       "llm_only": {
         "root_cause": "coolant_leak",
-        "sop": "SOP-CL-001:Section-3.2",
-        "action": "Inspect all coolant lines, fittings, and seals on unit U017 for leaks; verify coolant reservoir level; replace any damaged hoses or seals; re\u2011pressurize the system and monitor coolant_flow_l_min, coolant_pressure_bar, and coolant_temp_c for return to baseline before resuming production.",
-        "cost": 0.00044954999999999995,
+        "sop": "SOP-CL-01#Leak_Detection",
+        "action": "Inspect coolant lines and seals for leaks; verify coolant reservoir level; purge air from system; replace any damaged hoses or seals; re\u2011calibrate coolant flow sensor after repair.",
+        "cost": 0.00026085,
         "steps": 1
       },
       "agent": {
-        "root_cause": "unknown",
-        "sop": "SOP-G-001",
-        "action": "escalate_to_maintenance_engineer",
-        "cost": 0.0032189,
+        "root_cause": "coolant_leak",
+        "sop": "SOP-C-201",
+        "action": "stop_and_inspect_coolant_circuit",
+        "cost": 0.00167015,
         "steps": 5,
         "injection_findings": 0,
-        "error": "report validation failed: ValidationError",
-        "confidence": 0.1
+        "error": "RuntimeError: LLM HTTP 400: {\"error\":{\"message\":\"Tool call validation failed: tool call validation failed: attempted to call tool 'open_ticket' which was not in request.tools\",\"type\":\"invalid_request_error\",\"code\":\"tool_use_failed\",\"failed_generation\":\"{\\\"name\\\": \\\"open_ticket\\\", \\\"arguments\\\": {\\\"unit_id\\\":\\\"U017\\\",\\\"root_cause\\\":\\\"coolant_leak\\\",\\\"recommended_action\\\":\\\"stop_and_inspect_coolant_circuit\\\",\\\"sop_reference\\\":",
+        "confidence": 0.92
       }
     },
     "C09": {
@@ -164,21 +164,21 @@
       },
       "injection": false,
       "llm_only": {
-        "root_cause": "sensor_fault (position_error_um sensor reading out of spec)",
-        "sop": "SOP-001: Sensor Validation and Calibration, Section 3.2",
-        "action": "Perform a diagnostic check on the position_error_um sensor, verify its calibration against a reference standard, and replace the sensor if calibration is out of tolerance. After replacement, re\u2011run the unit through a test cycle to confirm that anomaly scores return to normal levels.",
-        "cost": 0.0005157,
+        "root_cause": "bearing_wear",
+        "sop": "SOP-001: Bearing Inspection and Replacement (Section 3.2)",
+        "action": "Schedule a detailed bearing inspection for unit U028, including vibration analysis and visual check for wear. If wear is confirmed, replace the affected bearings and re\u2011calibrate the position control loop before returning the unit to production.",
+        "cost": 0.00030389999999999996,
         "steps": 1
       },
       "agent": {
-        "root_cause": "unknown",
-        "sop": "SOP-G-001",
-        "action": "escalate_to_maintenance_engineer",
-        "cost": 0.0009906000000000001,
-        "steps": 4,
+        "root_cause": "sensor_fault",
+        "sop": "SOP-E-301",
+        "action": "inspect_position_sensor",
+        "cost": 0.0011359500000000002,
+        "steps": 3,
         "injection_findings": 0,
-        "error": "HTTPStatusError: Client error '400 Bad Request' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
-        "confidence": 0.1
+        "error": "",
+        "confidence": 0.8
       }
     },
     "C08": {
@@ -189,21 +189,21 @@
       },
       "injection": false,
       "llm_only": {
-        "root_cause": "sensor_fault",
-        "sop": "SOP-1001 Section 3.2 \u2013 Position Sensor Validation and Replacement",
-        "action": "Perform a calibrated verification of the position sensor on unit U025. Compare its output against a known reference standard. If the discrepancy persists, replace the position sensor and re\u2011run the anomaly detection cycle. After replacement, execute the sensor calibration routine outlined in SOP\u20111001 and monitor the next 10 cycles for residual deviations.",
-        "cost": 0.0006379500000000001,
+        "root_cause": "sensor_fault (position_error_um sensor drift)",
+        "sop": "SOP-001 Section 3",
+        "action": "Perform a detailed inspection and calibration of the position sensor assembly on unit U025; verify sensor wiring and connections, recalibrate according to SOP; if calibration fails, replace the sensor and re\u2011validate performance before resuming production.",
+        "cost": 0.0003144,
         "steps": 1
       },
       "agent": {
         "root_cause": "calibration_drift",
-        "sop": "SOP-G-004",
-        "action": "run_axis_calibration",
-        "cost": 0.00140025,
+        "sop": "SOP-E-302",
+        "action": "schedule_calibration_check",
+        "cost": 0.00139215,
         "steps": 4,
         "injection_findings": 0,
-        "error": "HTTPStatusError: Client error '400 Bad Request' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
-        "confidence": 0.85
+        "error": "",
+        "confidence": 0.78
       }
     },
     "C07": {
@@ -215,20 +215,20 @@
       "injection": false,
       "llm_only": {
         "root_cause": "filter_clog",
-        "sop": "SOP-FT-03#Section-2.1",
-        "action": "Schedule immediate filter cleaning or replacement, then re\u2011validate coolant flow and outlet pressure. After filter service, run a verification cycle to confirm that filter_dp_bar returns to baseline and that coolant_flow_l_min and outlet_pressure_bar recover. Document the action in the maintenance log and monitor for recurrence.",
-        "cost": 0.0004041,
+        "sop": "SOP-FT-001#Section3",
+        "action": "Schedule immediate filter inspection and replacement per SOP-FT-001 Section 3. Verify downstream outlet pressure and coolant flow after filter change, and monitor filter differential pressure for return to baseline.",
+        "cost": 0.00027404999999999997,
         "steps": 1
       },
       "agent": {
-        "root_cause": "unknown",
-        "sop": "SOP-G-001",
-        "action": "escalate_to_maintenance_engineer",
-        "cost": 0.0030684999999999996,
-        "steps": 5,
+        "root_cause": "filter_clog",
+        "sop": "SOP-C-202",
+        "action": "inspect_and_replace_coolant_filter",
+        "cost": 0.0012995,
+        "steps": 3,
         "injection_findings": 0,
-        "error": "report validation failed: ValidationError",
-        "confidence": 0.1
+        "error": "",
+        "confidence": 0.92
       }
     },
     "C06": {
@@ -240,19 +240,19 @@
       "injection": false,
       "llm_only": {
         "root_cause": "bearing_wear",
-        "sop": "SOP-001: Bearing Inspection Procedure, Section 3.2",
-        "action": "Conduct a detailed bearing inspection on unit U021 (visual check, vibration analysis, temperature check); replace bearings if wear is confirmed; recalibrate the spindle vibration sensor after maintenance; resume monitoring of spindle_vibration_mm_s, spindle_temp_c, and motor_current_a to verify return to baseline values.",
-        "cost": 0.00068085,
+        "sop": "SOP-001#Bearing_Inspection",
+        "action": "Schedule immediate inspection of spindle bearings, replace if wear exceeds limits, re\u2011balance spindle, and verify vibration levels after maintenance before resuming production.",
+        "cost": 0.00025529999999999997,
         "steps": 1
       },
       "agent": {
         "root_cause": "bearing_wear",
-        "sop": "SOP-G-004",
-        "action": "schedule_bearing_replacement",
-        "cost": 0.0013677000000000001,
-        "steps": 4,
+        "sop": "SOP-M-101",
+        "action": "reduce_spindle_speed_and_schedule_bearing_replacement",
+        "cost": 0.00192525,
+        "steps": 5,
         "injection_findings": 0,
-        "error": "HTTPStatusError: Client error '400 Bad Request' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
+        "error": "",
         "confidence": 0.85
       }
     },
@@ -265,20 +265,20 @@
       "injection": false,
       "llm_only": {
         "root_cause": "coolant_leak",
-        "sop": "SOP-CL-01 Section 3.2",
-        "action": "Inspect all coolant lines, fittings, and seals on unit U052 for leaks; verify coolant pump operation and pressure relief valve; refill coolant to nominal level; re\u2011calibrate coolant pressure and flow sensors; then monitor coolant_pressure_bar, coolant_flow_l_min, and coolant_temp_c for return to baseline (see sensor summary showing -22.7% pressure, -17.2% flow, +12.5% temperature)",
-        "cost": 0.0004764,
+        "sop": "SOP-CL-01:3.2",
+        "action": "Inspect coolant supply and return lines for leaks or blockages, verify pump operation, and restore coolant pressure and flow to nominal levels before resuming production.",
+        "cost": 0.00027225,
         "steps": 1
       },
       "agent": {
         "root_cause": "coolant_leak",
-        "sop": "",
-        "action": "inspect_coolant_system_for_leak",
-        "cost": 0.0008381,
-        "steps": 2,
+        "sop": "SOP-C-201",
+        "action": "schedule_coolant_leak_inspection",
+        "cost": 0.0015087499999999999,
+        "steps": 4,
         "injection_findings": 0,
-        "error": "HTTPStatusError: Client error '400 Bad Request' for url 'https://api.groq.com/openai/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
-        "confidence": 0.78
+        "error": "",
+        "confidence": 0.85
       }
     }
   }

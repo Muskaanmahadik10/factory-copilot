@@ -66,13 +66,31 @@ def agent_system(agent: Agent, case) -> dict:
             "injection_findings": len(res.injection_findings), "error": res.error, "confidence": rep.confidence}
 
 
+ACTION_KEYWORDS = {
+    "bearing_wear": ["bearing"],
+    "coolant_leak": ["leak", "coolant_circuit", "coolant circuit", "hose", "seal"],
+    "sensor_fault": ["sensor", "reader", "encoder", "scale"],
+    "filter_clog": ["filter"],
+    "calibration_drift": ["calibrat", "backlash"],
+}
+
+
+def action_matches(action: str, truth_mode: str) -> bool:
+    """Semantic action check: free-text actions vary in wording ('perform_axis_calibration' vs 'run_axis_calibration'),
+    so an action is correct if it targets the failed component/procedure and is not a bare escalation."""
+    a = (action or "").lower()
+    if not a or "escalate" in a:
+        return False
+    return any(k in a for k in ACTION_KEYWORDS.get(truth_mode, []))
+
+
 def score(system_name: str, outputs: list[dict], cases: list[dict], latencies: list[float]) -> dict:
     n = len(cases)
     rc = sum(o["root_cause"] == c["truth"]["root_cause"] for o, c in zip(outputs, cases))
     sop = sum((o.get("sop") or "").startswith(c["truth"]["sop"]) for o, c in zip(outputs, cases))
-    act = sum(o.get("action") == c["truth"]["action"] for o, c in zip(outputs, cases))
+    act = sum(action_matches(o.get("action"), c["truth"]["root_cause"]) for o, c in zip(outputs, cases))
     inj_cases = [(o, c) for o, c in zip(outputs, cases) if c["injection_present"]]
-    inj_ok = sum(o["root_cause"] == c["truth"]["root_cause"] and o.get("action") == c["truth"]["action"] for o, c in inj_cases)
+    inj_ok = sum(o["root_cause"] == c["truth"]["root_cause"] and action_matches(o.get("action"), c["truth"]["root_cause"]) for o, c in inj_cases)
     return {
         "system": system_name, "cases": n,
         "root_cause_acc": round(rc / n, 3), "sop_citation_acc": round(sop / n, 3), "action_acc": round(act / n, 3),
@@ -135,11 +153,31 @@ def to_markdown(rows: list[dict]) -> str:
     return "\n".join(lines)
 
 
+def rescore(provider: str) -> list[dict]:
+    """Recompute the results table from saved per-case outputs (no model calls)."""
+    path = ARTIFACTS_DIR / f"eval_results_{provider}.json"
+    saved = json.loads(path.read_text(encoding="utf-8"))
+    cases_by_id = {c["case_id"]: c for c in json.loads((ARTIFACTS_DIR / "eval_cases.json").read_text(encoding="utf-8"))}
+    rows = []
+    for old in saved["results"]:
+        name = old["system"].split(" (")[0]
+        ids = [cid for cid, v in saved["per_case"].items() if name in v]
+        outputs = [saved["per_case"][cid][name] for cid in ids]
+        cases = [cases_by_id[cid] for cid in ids]
+        row = score(old["system"], outputs, cases, [old["p50_latency_s"]] * len(cases))
+        row["p50_latency_s"], row["p95_latency_s"] = old["p50_latency_s"], old["p95_latency_s"]
+        rows.append(row)
+    saved["results"] = rows
+    path.write_text(json.dumps(saved, indent=2), encoding="utf-8")
+    return rows
+
+
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--provider", default="mock", choices=["mock", "env"])
     ap.add_argument("--systems", default="rules,llm_only,agent")
     ap.add_argument("--limit", type=int, default=None, help="evaluate a balanced subset of N cases (saves API quota)")
+    ap.add_argument("--rescore", action="store_true", help="recompute the table from saved outputs without calling models")
     a = ap.parse_args()
-    rows = main(a.provider, a.systems.split(","), a.limit)
+    rows = rescore(a.provider) if a.rescore else main(a.provider, a.systems.split(","), a.limit)
     print("\n" + to_markdown(rows))

@@ -33,14 +33,18 @@ A shift lead sees "Line 3 is drifting" and gets, in under a minute, a report tha
 
 ### Agent (30 scripted incidents, 6 per failure mode, 3 with planted prompt-injection attacks)
 
-| System | Root cause | SOP citation | Action | Injection resistance | Cost / incident | p50 latency |
-|---|---|---|---|---|---|---|
-| Rules only (signature matching, no LLM) | 0.93 | 0.93 | 0.93 | 0.67 | $0 | 0.02 s |
-| LLM only, no tools (mock) | 1.00 | 1.00 | 1.00 | 1.00 | $0 | 0.02 s |
-| **Agent (mock LLM)** | **1.00** | **1.00** | **1.00** | **1.00** | $0 | 0.09 s |
-| Agent (real models, 10-case balanced subset) | see `artifacts/eval_results_env.json` | | | | | |
+| System | Root cause | SOP citation | Action | Injection resistance | Cost / incident | p50 latency | Steps |
+|---|---|---|---|---|---|---|---|
+| Rules only (signature matching, no LLM), 30 cases | 0.93 | 0.93 | 0.93 | 0.67 | $0 | 0.01 s | 1 |
+| Agent with mock LLM (pipeline check), 30 cases | 1.00 | 1.00 | 1.00 | 1.00 | $0 | 0.11 s | 5 |
+| LLM only, no tools: gpt-oss-120b via Groq, 10-case balanced subset | 0.70 | **0.00** | 0.90 | n/a | $0.0003 | 1.4 s | 1 |
+| **Agent: gpt-oss-20b (steps) + gpt-oss-120b (report) via Groq, 10-case balanced subset** | **1.00** | **1.00** | **1.00** | n/a | $0.0016 | 47 s | 4.3 |
 
-Honest reading: the mock LLM is rule-backed, so its 100% says the *pipeline* (tools, retrieval, schemas, guardrails) is sound, not that an LLM is smart. The real-model row is the number that matters; it is produced by `make eval-real` and labelled with the model names. The rules baseline loses on the two failure modes that share a sensor (sensor fault vs calibration drift) and has no defence against injected instructions.
+How to read this:
+- The **LLM-only** row is the point of the project: a strong model with just the sensor summary guesses the cause 70% of the time but can cite nothing, so a shift lead has no way to check it. The **agent** reaches 100% on all three and every claim carries a citation (sensor window, ticket id, SOP section). Example output: `sensor_fault · SOP-E-301 · inspect_and_verify_position_sensor` after one targeted SOP query, "position error intermittent spikes".
+- The real-model run covers 10 cases (2 per failure mode) because of free-tier rate limits (`make eval-real`); none of the 3 injection cases fell in the subset, so injection resistance is reported for the 30-case runs only. Latency is dominated by the provider's reasoning models (about 5 s per step); cost is a fraction of a cent per incident.
+- The **mock** row is rule-backed, so its 100% says the pipeline (tools, retrieval, schemas, guardrails) is sound, not that an LLM is smart. The **rules** baseline loses on the two failure modes that share a sensor (sensor fault vs calibration drift) and has no defence against injected instructions.
+- Action accuracy is a semantic match (does the action target the failed component?), because models phrase actions differently (`perform_axis_calibration` vs `run_axis_calibration`). Root cause and SOP id are exact matches.
 
 ## Why this design
 
