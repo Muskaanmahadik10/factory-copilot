@@ -19,6 +19,10 @@ sensor stream ──► anomaly detector ──► event ──► agent ──�
 
 A shift lead sees "Line 3 is drifting" and gets, in under a minute, a report that says *what* (root cause with confidence), *why* (sensor evidence, a matching past ticket, the SOP section that describes these symptoms), *what to do* (the SOP's action), and *what it cost* (tokens and dollars per incident), with the work order parked for their approval.
 
+![Dashboard: unit U001 investigated live with gpt-oss models on Groq](docs/img/dashboard.jpg)
+
+*Live run on unit U001 (real models): bearing wear at 86% confidence, five cited pieces of evidence (sensor window, RUL policy band, two SOP-M-101 sections, past ticket T1000), $0.0024, 6 steps, 48 s. The guardrail also caught and redacted a planted "ignore all previous instructions" note in this unit's maintenance history.*
+
 ## Results
 
 ### Analytics (held-out machines, time order preserved; `artifacts/analytics_metrics.json`)

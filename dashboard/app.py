@@ -8,6 +8,10 @@ from __future__ import annotations
 
 import json
 import pickle
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))  # run from anywhere: `streamlit run dashboard/app.py`
 
 import pandas as pd
 import plotly.graph_objects as go
