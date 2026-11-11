@@ -4,7 +4,7 @@
 
 Built as a portfolio project for AI-engineer roles in manufacturing. Everything runs on a laptop with no API key (deterministic mock mode); with a key it uses real models through any OpenAI-compatible or Anthropic endpoint.
 
-![CI](https://github.com/muskaanmahadik/factory-copilot/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/Muskaanmahadik10/factory-copilot/actions/workflows/ci.yml/badge.svg)
 
 ## What it does
 
