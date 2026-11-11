@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "factory-copilot"
+version = "0.1.0"
+description = "An AI agent that investigates production-line anomalies with tools, RAG over SOPs, cost-aware model routing and human approval."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "numpy>=1.26",
+  "pandas>=2.1",
+  "scikit-learn>=1.4",
+  "pydantic>=2.5",
+  "pydantic-settings>=2.1",
+  "rank-bm25>=0.2.2",
+  "httpx>=0.26",
+  "python-dotenv>=1.0",
+  "fastapi>=0.110",
+  "uvicorn>=0.27",
+  "mcp>=2.0",
+]
+
+[project.optional-dependencies]
+dashboard = ["streamlit>=1.32", "plotly>=5.18"]
+dev = ["pytest>=8.0", "pytest-cov>=4.1"]
+
+[tool.setuptools.packages.find]
+include = ["factory_copilot*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

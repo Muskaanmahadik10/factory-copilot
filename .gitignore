@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+artifacts/traces/
+artifacts/models.pkl
+data/generated/
+.pytest_cache/
+*.egg-info/

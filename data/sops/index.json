@@ -1,0 +1,50 @@
+[
+  {
+    "id": "SOP-M-101",
+    "title": "Spindle bearing wear: diagnosis and replacement"
+  },
+  {
+    "id": "SOP-C-201",
+    "title": "Coolant leak: detection and repair"
+  },
+  {
+    "id": "SOP-E-301",
+    "title": "Position sensor fault: intermittent position error"
+  },
+  {
+    "id": "SOP-C-202",
+    "title": "Coolant filter clog: differential pressure high"
+  },
+  {
+    "id": "SOP-E-302",
+    "title": "Axis calibration drift"
+  },
+  {
+    "id": "SOP-G-001",
+    "title": "General alarm response and escalation"
+  },
+  {
+    "id": "SOP-G-002",
+    "title": "Lockout-tagout before maintenance"
+  },
+  {
+    "id": "SOP-G-003",
+    "title": "Sensor baseline values and alarm limits"
+  },
+  {
+    "id": "SOP-G-004",
+    "title": "Remaining useful life (RUL) thresholds"
+  },
+  {
+    "id": "SOP-G-005",
+    "title": "Work order creation"
+  },
+  {
+    "id": "SOP-Q-401",
+    "title": "Quality hold after position error events"
+  },
+  {
+    "id": "SOP-G-006",
+    "title": "Copilot usage policy"
+  }
+]
