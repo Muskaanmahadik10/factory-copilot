@@ -11,7 +11,7 @@ from functools import lru_cache
 
 import pandas as pd
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from factory_copilot import __version__
 from factory_copilot.agent import Agent
@@ -42,7 +42,7 @@ def state() -> _State:
 
 class InvestigateIn(BaseModel):
     unit_id: str
-    cycle: int | None = None
+    cycle: int | None = Field(default=None, description="Investigate as of this cycle, using only data up to it. Omit to use the unit's first detected anomaly (or its latest cycle if there is none).")
 
 
 class DecisionIn(BaseModel):
@@ -64,32 +64,38 @@ def incidents():
     return [e.model_dump() for e in st.detector.detect(st.sensors)]
 
 
+def _event_at_last_cycle(detector, g: pd.DataFrame, message: str) -> AnomalyEvent:
+    """An event describing the last cycle of `g`, computed from `g` only (features are causal, so later rows of the
+    unit cannot influence it). Contributions need the engineered rolling features, not a raw CSV row."""
+    last = make_features(g).iloc[-1]
+    score = float(detector.score(g).iloc[-1])
+    return AnomalyEvent(unit_id=str(last["unit_id"]), cycle=int(last["cycle"]), score=score, top_sensors=[s for s, _ in detector.contributions(last)[:3]], message=message)
+
+
 @app.post("/investigate")
 def investigate(body: InvestigateIn):
     st = state()
-    g = st.sensors[st.sensors["unit_id"] == body.unit_id]
+    g = st.sensors[st.sensors["unit_id"] == body.unit_id].sort_values("cycle")
     if g.empty:
         raise HTTPException(404, f"unknown unit {body.unit_id}")
-    events = st.detector.detect(g)
-    if events:
-        ev = events[0]
+    if body.cycle is not None:  # `is not None`: cycle 0 is a value to validate, not "omitted"
+        lo, hi = int(g["cycle"].min()), int(g["cycle"].max())
+        if not lo <= body.cycle <= hi:
+            raise HTTPException(400, f"cycle {body.cycle} outside {body.unit_id}'s history ({lo}-{hi})")
+        # Historical investigation: cut the history at the requested cycle BEFORE detection, so the event's score,
+        # sensor ranking and message come from data that existed then, never from a later alert.
+        g = g[g["cycle"] <= body.cycle]
+        alerts = st.detector.detect(g)
+        seen = f"first alert up to then at cycle {alerts[0].cycle} (score {alerts[0].score:.3f})" if alerts else "no alert detected up to then"
+        ev = _event_at_last_cycle(st.detector, g, f"investigation requested at cycle {body.cycle}; {seen}")
     else:
-        # No detected anomaly: investigate manually at the requested cycle (default: the latest one). Contributions need
-        # the engineered rolling features, not a raw CSV row.
-        feats = make_features(g)
-        if body.cycle:
-            feats = feats[feats["cycle"] <= body.cycle]
-        if feats.empty:
-            raise HTTPException(400, f"no data for {body.unit_id} at or before cycle {body.cycle}")
-        last = feats.iloc[-1]
-        ev = AnomalyEvent(unit_id=body.unit_id, cycle=int(last["cycle"]), score=0.0, top_sensors=[s for s, _ in st.detector.contributions(last)[:3]], message="manual investigation (no anomaly detected)")
-    if body.cycle:
-        ev.cycle = body.cycle
+        events = st.detector.detect(g)
+        ev = events[0] if events else _event_at_last_cycle(st.detector, g, "manual investigation at the latest cycle (no anomaly detected)")
     res = st.agent.investigate(ev)
     # The agent only recommends; the API turns the recommendation into a pending work order for a human.
     rep = res.report
     pa = st.gate.request(rep.unit_id, "open_ticket", {"root_cause": rep.root_cause, "recommended_action": rep.recommended_action, "sop_reference": rep.sop_reference, "priority": "P2", "evidence_summary": rep.summary})
-    out = res.to_dict() | {"pending_action_id": pa.action_id}
+    out = res.to_dict() | {"event": ev.model_dump(), "pending_action_id": pa.action_id}
     st.results[res.incident_id] = out
     return out
 

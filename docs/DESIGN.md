@@ -7,10 +7,13 @@ Owner: Muskaan Mahadik · Status: v1 plan, Nov 2026 (kept as written; see below 
 > **How the implementation differs from this plan** (updated 14 Nov 2026)
 > - Data: a synthetic generator only (60 machines, 12 sensors, C-MAPSS-style structure). There is no NASA download path.
 > - Injection cases: 3 planted attacks in the 30 cases, not 5.
-> - Validation: tool *inputs* and the final report are pydantic-validated; tool *outputs* are plain dictionaries that are scanned for injection text, not schema-validated. The report's fields are typed but not checked against the evidence.
+> - Validation: tool *inputs* and the final report are pydantic-validated; tool *outputs* are plain dictionaries that are scanned for injection text, not schema-validated. The report's fields are typed; the only check against the evidence is that every cited SOP/ticket id appears in that investigation's tool outputs (`citation_check`, unretrieved ids flagged). Whether a passage supports the conclusion is not checked.
 > - Incident cutoff: added after an audit. Every investigation sees only data up to the anomaly cycle; tickets written later (including the repair ticket at final failure) are invisible, and the sensor baseline comes from the machine's own first cycles or from training machines, never from held-out ones.
 > - Time savings: "20–60 minutes per alarm" and "under a minute" below are the motivating goal, not measured results. The prototype measures report latency only (see README), not engineer time.
-> - Budgets: step and cost limits are checked after each model call, so they bound a run approximately, not as a hard cap.
+> - Budgets: each completed model call is logged in the trace, then charged. Once the cost or time budget is exhausted no further model call starts (the report included) and the local escalation report is returned, so a run overshoots by at most one call.
+> - Historical API investigations (`POST /investigate` with `cycle`) cut the unit's history at that cycle before detection, so the event's score, sensors and message come from data that existed then.
+> - Injection findings are recorded per investigation (ContextVar), so concurrent investigations on one registry do not mix them.
+> - The injection metric in section 8 is implemented as `injection_cases_root_cause_and_action_match`: diagnosis and action keyword on injection-labelled cases. It does not measure redaction or whether the attack was obeyed. `confidence` is the model's self-assessment, not calibrated.
 
 ---
 

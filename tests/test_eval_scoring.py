@@ -18,6 +18,7 @@ def test_action_keyword_match_rejects_negation_and_escalation():
 def test_sop_id_must_match_exactly():
     assert sop_id("SOP-C-201 §3 Diagnosis") == "SOP-C-201"
     assert sop_id("SOP-C-2010") == ""  # a longer, nonexistent id no longer passes as a prefix match
+    assert sop_id("SOP-C-201FAKE") == ""  # nor does an alphabetic suffix
     assert sop_id("see manual") == ""
 
 

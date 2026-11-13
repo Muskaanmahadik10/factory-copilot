@@ -16,6 +16,7 @@ from pathlib import Path
 from pydantic import ValidationError
 
 from factory_copilot.agent.prompts import CHOOSE_STEP, SYSTEM, WRITE_REPORT
+from factory_copilot.citations import check_report_citations
 from factory_copilot.config import ARTIFACTS_DIR, settings
 from factory_copilot.data.schemas import AnomalyEvent, IncidentReport
 from factory_copilot.guardrails import Budget, BudgetExceeded, wrap_untrusted
@@ -65,12 +66,14 @@ class AgentResult:
     steps: int
     error: str = ""
     injection_findings: list[dict] = field(default_factory=list)
+    fallback: bool = False  # True when the report is the local escalation template, not a model report
+    citation_check: dict = field(default_factory=dict)
 
     def to_dict(self) -> dict:
         return {
             "incident_id": self.incident_id, "report": self.report.model_dump() if self.report else None,
             "cost_usd": round(self.cost_usd, 6), "latency_s": round(self.latency_s, 3), "steps": self.steps, "error": self.error,
-            "injection_findings": self.injection_findings,
+            "fallback": self.fallback, "citation_check": self.citation_check, "injection_findings": self.injection_findings,
             "trace": [t.__dict__ for t in self.trace],
         }
 
@@ -122,8 +125,9 @@ class Agent:
         tier, llm = self.router.for_step(step_type, retry=retry)
         tools = self._native_tools() if step_type == "choose_next_step" else self._report_tool()
         resp = llm.complete([Message("system", SYSTEM), Message("user", prompt)], json_mode=True, tools=tools, max_tokens=3000 if step_type == "write_report" else 1200)
-        budget.charge(resp.cost_usd)
+        # Log first, then charge: a call that pushes the run over budget has been paid for and must be in the trace.
         trace.append(TraceStep("llm", step_type, tier=f"{tier}:{llm.name}", input=prompt[-1500:], output=(json.dumps(resp.tool_calls) if resp.tool_calls else resp.text)[:2000], tokens_in=resp.input_tokens, tokens_out=resp.output_tokens, cost_usd=resp.cost_usd, latency_s=resp.latency_s))
+        budget.charge(resp.cost_usd)
         if resp.tool_calls:  # native tool call: take the first one as this step's decision (or the submitted report)
             tc = resp.tool_calls[0]
             if step_type == "write_report":
@@ -149,10 +153,12 @@ class Agent:
     # ---- main entry ----
     def investigate(self, event: AnomalyEvent) -> AgentResult:
         """Investigate an event using only data available at its cycle (the registry's incident cutoff)."""
-        with self.registry.as_of(event.cycle):
-            return self._investigate(event)
+        # Both the data cutoff and the injection findings are scoped to this call (ContextVars), so concurrent
+        # investigations on one shared registry neither see each other's data window nor each other's findings.
+        with self.registry.as_of(event.cycle), self.registry.detector.collect() as findings:
+            return self._investigate(event, findings)
 
-    def _investigate(self, event: AnomalyEvent) -> AgentResult:
+    def _investigate(self, event: AnomalyEvent, findings: list) -> AgentResult:
         incident_id = f"INC-{uuid.uuid4().hex[:8]}"
         budget = Budget(max_steps=self.max_steps, max_cost_usd=self.max_cost_usd)
         trace: list[TraceStep] = []
@@ -179,28 +185,35 @@ class Agent:
         except Exception as e:  # provider/network/JSON errors: record, then still try to write a report from what we have
             error = f"{type(e).__name__}: {e}"
 
-        # Report, with one strong-model retry on validation failure, then a safe fallback.
+        # Report, with one strong-model retry on validation failure, then a safe fallback. The report shares the run's
+        # cost and time budget: once it is exhausted no further model call starts and the local fallback is used.
         for attempt in range(2):
             try:
+                budget.check()
                 raw = self._llm("write_report", WRITE_REPORT.format(incident=incident, history=self._history(trace)), budget, trace, retry=attempt == 1)
                 raw["unit_id"] = event.unit_id
                 raw["requires_approval"] = True
                 report = IncidentReport(**raw)
                 break
-            except (ValidationError, ValueError, KeyError, BudgetExceeded) as e:
+            except BudgetExceeded as e:
+                error = error or str(e)
+                break
+            except (ValidationError, ValueError, KeyError) as e:
                 error = error or f"report validation failed: {type(e).__name__}"
                 continue
             except Exception as e:
                 error = error or f"{type(e).__name__}: {e}"
                 break
-        if report is None:
+        fallback = report is None
+        if fallback:
             report = IncidentReport(unit_id=event.unit_id, root_cause="unknown", confidence=0.1,
                                     evidence=[{"source": "analysis", "summary": (f"Automatic investigation incomplete ({(error or 'no valid report')[:120]}). Anomaly on sensors: {', '.join(event.top_sensors)}.")[:400], "citation": f"cycle {event.cycle}"}],
                                     sop_reference="SOP-G-001", recommended_action="escalate_to_maintenance_engineer", requires_approval=True,
                                     summary="The copilot could not produce a validated report; escalating per SOP-G-001 with the raw anomaly evidence attached.")
+        # Flag cited SOP/ticket ids that this investigation never retrieved (invented, or from outside its evidence).
+        citations = {"skipped": "local fallback report"} if fallback else check_report_citations(report.model_dump(), [(t.name, t.output) for t in trace if t.kind == "tool"])
         result = AgentResult(incident_id=incident_id, report=report, trace=trace, cost_usd=budget.cost_usd, latency_s=time.perf_counter() - t0, steps=budget.steps, error=error,
-                             injection_findings=[f.__dict__ for f in self.registry.detector.findings])
-        self.registry.detector.findings.clear()
+                             injection_findings=[f.__dict__ for f in findings], fallback=fallback, citation_check=citations)
         self._persist(result)
         return result
 

@@ -8,7 +8,10 @@ from __future__ import annotations
 
 import re
 import time
+from contextlib import contextmanager
+from contextvars import ContextVar
 from dataclasses import dataclass, field
+from typing import Iterator
 
 INJECTION_PATTERNS = [
     r"ignore (all |any )?(previous|prior|above) instructions",
@@ -28,15 +31,35 @@ class InjectionFinding:
     original_excerpt: str
 
 
+# Findings of the investigation running in the current context (thread / task). None = not inside an investigation.
+_SCOPED_FINDINGS: ContextVar[list | None] = ContextVar("injection_findings", default=None)
+
+
 class InjectionDetector:
-    """Flags instruction-like text inside data and redacts it. Findings are kept for the audit trail."""
+    """Flags instruction-like text inside data and redacts it. Findings are kept for the audit trail.
+
+    Inside `collect()` findings go to a list owned by that investigation (a ContextVar, so two concurrent
+    investigations sharing one registry never see each other's findings). Outside it they go to `self.findings`.
+    """
 
     def __init__(self):
         self.findings: list[InjectionFinding] = []
 
+    @contextmanager
+    def collect(self) -> Iterator[list[InjectionFinding]]:
+        own: list[InjectionFinding] = []
+        token = _SCOPED_FINDINGS.set(own)
+        try:
+            yield own
+        finally:
+            _SCOPED_FINDINGS.reset(token)
+
     def scan(self, text: str, source: str) -> str:
+        scoped = _SCOPED_FINDINGS.get()
+        target = scoped if scoped is not None else self.findings
+
         def _redact(m: re.Match) -> str:
-            self.findings.append(InjectionFinding(source=source, matched=m.group(0), original_excerpt=text[max(0, m.start() - 40): m.end() + 40]))
+            target.append(InjectionFinding(source=source, matched=m.group(0), original_excerpt=text[max(0, m.start() - 40): m.end() + 40]))
             return "[REDACTED: instruction-like text removed]"
         return _INJ.sub(_redact, text)
 
@@ -60,9 +83,18 @@ class Budget:
     started: float = field(default_factory=time.perf_counter)
 
     def charge(self, cost: float) -> None:
+        """Record a completed call's cost, then raise if the run is now over budget. The caller must log the call
+        before charging, so the call that crossed the limit is still in the trace."""
         self.cost_usd += cost
         if self.cost_usd > self.max_cost_usd:
             raise BudgetExceeded(f"cost {self.cost_usd:.4f} USD exceeds budget {self.max_cost_usd:.4f}")
+
+    def check(self) -> None:
+        """Raise if no new model call may start: cost already over budget, or the run's deadline has passed."""
+        if self.cost_usd > self.max_cost_usd:
+            raise BudgetExceeded(f"cost {self.cost_usd:.4f} USD exceeds budget {self.max_cost_usd:.4f}")
+        if time.perf_counter() - self.started > self.max_seconds:
+            raise BudgetExceeded("time limit reached")
 
     def step(self) -> None:
         self.steps += 1

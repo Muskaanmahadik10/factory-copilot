@@ -1,0 +1,359 @@
+{
+  "source_run": "artifacts/eval_results_env.json (run_at 2026-11-13T16:22:39Z)",
+  "how_linked": "Traces were saved locally by that run (artifacts/traces/ is gitignored). Each was matched to its case by unit_id, recorded cost and root cause; all 10 match one-to-one.",
+  "citation_check": "Computed afterwards, offline, with factory_copilot.citations.check_report_citations: does every SOP/ticket id the report cites appear in that investigation's tool outputs? It does not check that the passage supports the conclusion.",
+  "trace_limits": "LLM prompts are stored as their last 1,500 characters and outputs truncated to 2,000; tool outputs are stored in full.",
+  "cases": [
+    {
+      "case_id": "C01",
+      "unit_id": "U003",
+      "truth": "sensor_fault",
+      "agent_root_cause": "calibration_drift",
+      "correct": false,
+      "incident_id": "INC-8d48c5be",
+      "trace": "traces/INC-8d48c5be.json",
+      "sensor_window": [
+        136,
+        165
+      ],
+      "tools_called": [
+        "query_sensors",
+        "search_sops"
+      ],
+      "sop_reference": "SOP-E-302",
+      "citation_check": {
+        "cited_sop_ids": [
+          "SOP-E-302"
+        ],
+        "cited_ticket_ids": [],
+        "retrieved_sop_ids": [
+          "SOP-E-301",
+          "SOP-E-302"
+        ],
+        "unretrieved_citations": [],
+        "ok": true
+      }
+    },
+    {
+      "case_id": "C02",
+      "unit_id": "U005",
+      "truth": "calibration_drift",
+      "agent_root_cause": "calibration_drift",
+      "correct": true,
+      "incident_id": "INC-d87680cb",
+      "trace": "traces/INC-d87680cb.json",
+      "sensor_window": [
+        97,
+        126
+      ],
+      "tools_called": [
+        "query_sensors",
+        "estimate_rul",
+        "get_maintenance_history",
+        "search_sops"
+      ],
+      "sop_reference": "SOP-E-302",
+      "citation_check": {
+        "cited_sop_ids": [
+          "SOP-E-302",
+          "SOP-G-004"
+        ],
+        "cited_ticket_ids": [
+          "T1049"
+        ],
+        "retrieved_sop_ids": [
+          "SOP-E-301",
+          "SOP-E-302",
+          "SOP-G-004"
+        ],
+        "unretrieved_citations": [],
+        "ok": true
+      }
+    },
+    {
+      "case_id": "C03",
+      "unit_id": "U009",
+      "truth": "filter_clog",
+      "agent_root_cause": "filter_clog",
+      "correct": true,
+      "incident_id": "INC-170e70e5",
+      "trace": "traces/INC-170e70e5.json",
+      "sensor_window": [
+        106,
+        135
+      ],
+      "tools_called": [
+        "query_sensors",
+        "estimate_rul",
+        "get_maintenance_history",
+        "search_sops"
+      ],
+      "sop_reference": "SOP-C-202",
+      "citation_check": {
+        "cited_sop_ids": [
+          "SOP-C-202",
+          "SOP-G-004"
+        ],
+        "cited_ticket_ids": [],
+        "retrieved_sop_ids": [
+          "SOP-C-201",
+          "SOP-C-202",
+          "SOP-G-004"
+        ],
+        "unretrieved_citations": [],
+        "ok": true
+      }
+    },
+    {
+      "case_id": "C04",
+      "unit_id": "U011",
+      "truth": "bearing_wear",
+      "agent_root_cause": "bearing_wear",
+      "correct": true,
+      "incident_id": "INC-5b1e2a88",
+      "trace": "traces/INC-5b1e2a88.json",
+      "sensor_window": [
+        118,
+        147
+      ],
+      "tools_called": [
+        "query_sensors",
+        "estimate_rul",
+        "get_maintenance_history",
+        "search_sops"
+      ],
+      "sop_reference": "SOP-M-101",
+      "citation_check": {
+        "cited_sop_ids": [
+          "SOP-G-004",
+          "SOP-M-101"
+        ],
+        "cited_ticket_ids": [
+          "T1040"
+        ],
+        "retrieved_sop_ids": [
+          "SOP-G-003",
+          "SOP-G-004",
+          "SOP-M-101"
+        ],
+        "unretrieved_citations": [],
+        "ok": true
+      }
+    },
+    {
+      "case_id": "C05",
+      "unit_id": "U017",
+      "truth": "coolant_leak",
+      "agent_root_cause": "filter_clog",
+      "correct": false,
+      "incident_id": "INC-dd6fef54",
+      "trace": "traces/INC-dd6fef54.json",
+      "sensor_window": [
+        95,
+        124
+      ],
+      "tools_called": [
+        "query_sensors",
+        "estimate_rul",
+        "get_maintenance_history",
+        "search_sops"
+      ],
+      "sop_reference": "SOP-C-202",
+      "citation_check": {
+        "cited_sop_ids": [
+          "SOP-C-202",
+          "SOP-G-004"
+        ],
+        "cited_ticket_ids": [],
+        "retrieved_sop_ids": [
+          "SOP-C-201",
+          "SOP-C-202",
+          "SOP-G-004"
+        ],
+        "unretrieved_citations": [],
+        "ok": true
+      }
+    },
+    {
+      "case_id": "C09",
+      "unit_id": "U028",
+      "truth": "sensor_fault",
+      "agent_root_cause": "calibration_drift",
+      "correct": false,
+      "incident_id": "INC-fe71ec22",
+      "trace": "traces/INC-fe71ec22.json",
+      "sensor_window": [
+        85,
+        114
+      ],
+      "tools_called": [
+        "query_sensors",
+        "estimate_rul",
+        "get_maintenance_history",
+        "search_sops"
+      ],
+      "sop_reference": "SOP-E-302",
+      "citation_check": {
+        "cited_sop_ids": [
+          "SOP-E-302",
+          "SOP-G-004"
+        ],
+        "cited_ticket_ids": [],
+        "retrieved_sop_ids": [
+          "SOP-E-301",
+          "SOP-E-302",
+          "SOP-G-004"
+        ],
+        "unretrieved_citations": [],
+        "ok": true
+      }
+    },
+    {
+      "case_id": "C08",
+      "unit_id": "U025",
+      "truth": "calibration_drift",
+      "agent_root_cause": "calibration_drift",
+      "correct": true,
+      "incident_id": "INC-7a6f7e82",
+      "trace": "traces/INC-7a6f7e82.json",
+      "sensor_window": [
+        161,
+        190
+      ],
+      "tools_called": [
+        "query_sensors",
+        "estimate_rul",
+        "get_maintenance_history",
+        "search_sops"
+      ],
+      "sop_reference": "SOP-E-302",
+      "citation_check": {
+        "cited_sop_ids": [
+          "SOP-E-301",
+          "SOP-E-302",
+          "SOP-G-004"
+        ],
+        "cited_ticket_ids": [
+          "T1014",
+          "T1049"
+        ],
+        "retrieved_sop_ids": [
+          "SOP-E-301",
+          "SOP-E-302",
+          "SOP-G-004"
+        ],
+        "unretrieved_citations": [],
+        "ok": true
+      }
+    },
+    {
+      "case_id": "C07",
+      "unit_id": "U024",
+      "truth": "filter_clog",
+      "agent_root_cause": "filter_clog",
+      "correct": true,
+      "incident_id": "INC-6c361996",
+      "trace": "traces/INC-6c361996.json",
+      "sensor_window": [
+        145,
+        174
+      ],
+      "tools_called": [
+        "query_sensors",
+        "estimate_rul",
+        "get_maintenance_history",
+        "search_sops"
+      ],
+      "sop_reference": "SOP-C-202",
+      "citation_check": {
+        "cited_sop_ids": [
+          "SOP-C-202",
+          "SOP-G-004"
+        ],
+        "cited_ticket_ids": [],
+        "retrieved_sop_ids": [
+          "SOP-C-201",
+          "SOP-C-202",
+          "SOP-G-003",
+          "SOP-G-004"
+        ],
+        "unretrieved_citations": [],
+        "ok": true
+      }
+    },
+    {
+      "case_id": "C06",
+      "unit_id": "U021",
+      "truth": "bearing_wear",
+      "agent_root_cause": "bearing_wear",
+      "correct": true,
+      "incident_id": "INC-8b6fb548",
+      "trace": "traces/INC-8b6fb548.json",
+      "sensor_window": [
+        80,
+        109
+      ],
+      "tools_called": [
+        "query_sensors",
+        "estimate_rul",
+        "get_maintenance_history",
+        "search_sops"
+      ],
+      "sop_reference": "SOP-M-101",
+      "citation_check": {
+        "cited_sop_ids": [
+          "SOP-G-004",
+          "SOP-M-101"
+        ],
+        "cited_ticket_ids": [
+          "T1040"
+        ],
+        "retrieved_sop_ids": [
+          "SOP-G-002",
+          "SOP-G-004",
+          "SOP-M-101"
+        ],
+        "unretrieved_citations": [],
+        "ok": true
+      }
+    },
+    {
+      "case_id": "C13",
+      "unit_id": "U052",
+      "truth": "coolant_leak",
+      "agent_root_cause": "coolant_leak",
+      "correct": true,
+      "incident_id": "INC-b03e1df2",
+      "trace": "traces/INC-b03e1df2.json",
+      "sensor_window": [
+        176,
+        205
+      ],
+      "tools_called": [
+        "query_sensors",
+        "estimate_rul",
+        "get_maintenance_history",
+        "search_sops"
+      ],
+      "sop_reference": "SOP-C-201",
+      "citation_check": {
+        "cited_sop_ids": [
+          "SOP-C-201",
+          "SOP-C-202",
+          "SOP-G-004"
+        ],
+        "cited_ticket_ids": [
+          "T1006"
+        ],
+        "retrieved_sop_ids": [
+          "SOP-C-201",
+          "SOP-C-202",
+          "SOP-G-004",
+          "SOP-M-101"
+        ],
+        "unretrieved_citations": [],
+        "ok": true
+      }
+    }
+  ]
+}

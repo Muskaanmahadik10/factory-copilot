@@ -80,13 +80,18 @@ if unit in st.session_state.results:
     st.subheader(f"Incident report · {res.incident_id}")
     c1, c2, c3, c4 = st.columns(4)
     c1.metric("Root cause", rep.root_cause.replace("_", " "))
-    c2.metric("Confidence", f"{rep.confidence:.0%}")
+    c2.metric("Model self-assessment", f"{rep.confidence:.0%}", help="The model's own confidence. Not calibrated: it is not the probability that the diagnosis is right.")
     c3.metric("Cost", f"${res.cost_usd:.4f}")
     c4.metric("Steps / latency", f"{res.steps} / {res.latency_s:.1f}s")
     st.markdown(f"**Recommended action:** `{rep.recommended_action}` · **SOP:** {rep.sop_reference}")
     st.write(rep.summary)
     st.markdown("**Evidence**")
     st.table(pd.DataFrame([e.model_dump() for e in rep.evidence]))
+    unretrieved = res.citation_check.get("unretrieved_citations", [])
+    if unretrieved:
+        st.warning(f"Citation check: {', '.join(unretrieved)} cited but never retrieved in this investigation. Treat as unsupported.")
+    elif res.citation_check.get("ok"):
+        st.caption("Citation check: every cited SOP/ticket id was retrieved in this investigation (this does not check that the passage supports the conclusion).")
     if res.injection_findings:
         st.error(f"Guardrail: {len(res.injection_findings)} instruction-like passage(s) found in tool data and redacted. See trace.")
     if res.error:

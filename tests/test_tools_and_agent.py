@@ -57,3 +57,4 @@ def test_agent_end_to_end_with_mock(registry):
     assert tools_called[0] == "query_sensors" and "search_sops" in tools_called
     assert "open_ticket" not in tools_called  # agent recommends, never executes
     assert res.steps <= 8 and res.error == ""
+    assert res.citation_check["ok"] and "SOP-C-201" in res.citation_check["cited_sop_ids"] and not res.fallback

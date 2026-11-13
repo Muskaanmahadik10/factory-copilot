@@ -18,7 +18,7 @@ sensor data (CSV replay) ──► anomaly detector ──► event ──► ag
                                                              │            least-privilege tools, step/cost budget
 ```
 
-A shift lead sees "Line 3 is drifting" and gets a report that says *what* (root cause with confidence), *why* (sensor evidence and the SOP section that describes these symptoms), *what to do* (the SOP's action), and *what it cost* (tokens and dollars per incident), with the work order parked for their approval. With the real models below a report takes about 75 seconds.
+A shift lead sees "Line 3 is drifting" and gets a report that says *what* (root cause, with the model's own uncalibrated confidence), *why* (sensor evidence and the SOP section that describes these symptoms), *what to do* (the SOP's action), and *what it cost* (tokens and dollars per incident), with the work order parked for their approval. With the real models below a report takes about 75 seconds.
 
 **Information boundary.** An investigation sees only what existed at the anomaly cycle: the sensor window and RUL estimate stop there, maintenance tickets written later (including the repair ticket at final failure) are invisible, and the sensor baseline comes from the machine's own first 30 cycles or the training fleet, never from held-out machines. An earlier version did not enforce this; see [Results](#results).
 
@@ -42,6 +42,8 @@ A shift lead sees "Line 3 is drifting" and gets a report that says *what* (root 
 
 Ten incidents on held-out machines (2 per failure mode), each investigated at its first anomaly cycle with data up to that cycle only. Models: gpt-oss-20b (tool steps) and gpt-oss-120b (report) on Groq. `artifacts/eval_results_env.json`, 14 Nov 2026.
 
+Provenance: this file (and `eval_results_mock.json` before 14 Nov) records `code_commit: b221be0`, but it was produced from the **uncommitted repair state on top of `b221be0`**, which was committed afterwards as `8912458`. The runner recorded HEAD only. It now records `git describe --dirty`, a hash of any uncommitted diff and a hash of the case file. The saved file was left as generated, not relabelled. The full report, tool outputs and sensor window behind each of the 10 agent rows are in [`artifacts/live_run_2026-11-13/`](artifacts/live_run_2026-11-13/).
+
 | System | Root cause | SOP id match | Action keyword match | Clean / recovered / failed runs | Cost / incident | p50 latency | Steps |
 |---|---|---|---|---|---|---|---|
 | Rules (signature matching on the sensor summary, no LLM) | 6/10 | 6/10 | 6/10 | 10 / 0 / 0 | $0 | 0.01 s | 1 |
@@ -50,13 +52,14 @@ Ten incidents on held-out machines (2 per failure mode), each investigated at it
 
 How to read this:
 - **The agent's measured advantage over rules is small: 7 vs 6 correct on 10 cases, which is not a meaningful difference.** They also fail differently. Rules mistook both filter clogs for coolant leaks; the agent got both right. The agent called one coolant leak a filter clog. Both systems called both sensor faults "calibration drift": at the first anomaly a faulty sensor has produced only one or two spikes, which looks like slow drift.
-- **What the agent adds is traceability, not accuracy.** The LLM without tools named a cause but never a real SOP (0/10; it invented ids like `SOP-FT-001`). Every agent report cites a real SOP section and the sensor window it used, so a reviewer can check it. Whether that saves an engineer time is not measured here.
+- **What the agent adds is checkable citations, not accuracy.** The LLM without tools named a cause but never a real SOP (0/10; it invented ids like `SOP-FT-001`). In all 10 agent reports, every SOP and ticket id cited was one that investigation had actually retrieved, and each trace shows the sensor window used ([`artifacts/live_run_2026-11-13/`](artifacts/live_run_2026-11-13/)). That shows the ids exist in the evidence, not that the passages support the conclusion: the wrong C05 diagnosis also cited a retrieved SOP. Reports now carry this check (`citation_check`), and an id the investigation never retrieved is flagged. Whether any of this saves an engineer time is not measured here.
+- **Confidence is the model's self-assessment, not a probability.** All three wrong agent answers were stated at 80–85%, higher than any correct one (60–78%).
 - **Early diagnosis is genuinely hard.** These cases are deliberately taken at the first anomaly, often dozens of cycles before the pattern is obvious.
 - No real-model injection test yet: the three planted attacks are on training machines, and this run used held-out machines only.
 
 ### Offline checks (mock model, all 30 cases, `artifacts/eval_results_mock.json`)
 
-The mock model is a rule-based stand-in used for tests and CI. Its scores check that the pipeline works, not that a model reasons well: rules 16/30, mock agent 18/30. Of the 3 cases with a planted injection note, the mock agent diagnosed 2 correctly, and in all 3 the note was redacted before the model saw it. Its single miss is a diagnosis error, not the attack working.
+The mock model is a rule-based stand-in used for tests and CI. Its scores check that the pipeline works, not that a model reasons well: rules 16/30, mock agent 18/30. Of the 3 cases with a planted injection note, the mock agent diagnosed 2 correctly (`injection_cases_root_cause_and_action_match`, formerly mislabelled `injection_resistance`), and in all 3 the note was redacted before the model saw it. Its single miss is a diagnosis error, not the attack working.
 
 ### What changed from the first published results
 
@@ -76,6 +79,7 @@ While fixing the baseline I also changed how `query_sensors` ranks sensors (each
 - **Root cause:** exact match of the failure-mode label.
 - **SOP id match:** the SOP id parsed from the answer equals the expected one. It does not check that the cited section supports the recommendation.
 - **Action keyword match:** the action names the failed component or procedure, is not negated and is not just "escalate". It is a keyword check, not an expert review.
+- **SOP ids** are parsed with token boundaries: `SOP-C-201FAKE` and `SOP-C-2010` do not count as `SOP-C-201`.
 
 ## Why this design
 
@@ -85,9 +89,9 @@ While fixing the baseline I also changed how `query_sensors` ranks sensors (each
 | **Anomaly ensemble: robust z-score of rolling means + IsolationForest**, trained on healthy cycles only | Drift shows in trends, not single readings; IsolationForest alone missed half the units. Threshold = 99.5th percentile of healthy scores. |
 | **Split by machine, time order kept, incident cutoff** | A new machine and future cycles are what deployment looks like. Random k-fold would leak, and so would letting an investigation read data from after the alarm. |
 | **Hybrid lexical retrieval (BM25 + TF-IDF) over SOP sections, with hand-written reranking boosts** | Section-level chunks give precise citations ("SOP-C-201 §2 Diagnosis"). Lexical search runs anywhere; no embeddings or learned reranker yet, and the `Index` interface accepts an embedding backend. |
-| **Native tool calling, report submitted as a tool** | Provider-enforced structured output: no JSON-mode truncation, every report validated by pydantic before anyone sees it. |
-| **Model router: cheap model for tool choice, strong model for the report** | Tool choice is short and structured; synthesis with citations is where quality matters. Every call is logged with tokens and cost. |
-| **Guardrails as code, not prompt text** | Tool permissions live in the registry (`open_ticket` is a write tool and always goes to the approval gate). Ticket notes and documents are wrapped as `<untrusted_data>` and scanned; instruction-like text is redacted and logged. Step and cost budgets are checked after each call, so they bound a run approximately rather than as a hard cap. |
+| **Native tool calling, report submitted as a tool** | Structured arguments instead of free-text JSON parsing, which removed the JSON-mode failures seen in the first real run. Every report is pydantic-validated before anyone sees it; that checks structure, not facts. Cited SOP/ticket ids are also checked against what the investigation retrieved. |
+| **Model router: cheap model for tool choice, strong model for the report** | Tool choice is short and structured; synthesis with citations is where quality matters. Every completed model call is in the per-incident trace with tier, tokens and cost, including the call that pushes a run over budget. |
+| **Guardrails as code, not prompt text** | Tool permissions live in the registry (`open_ticket` is a write tool and always goes to the approval gate). Ticket notes and documents are wrapped as `<untrusted_data>` and scanned; instruction-like text is redacted and recorded per investigation. Cost and time budgets are checked before each model call starts; the call that crosses the cost limit is logged, then no further call is made (report included) and a local escalation report is returned, so a run can overshoot by at most one call. |
 | **Mock LLM in CI** | Tests and the baseline evaluation never need a key, so a prompt-format bug fails in CI, not in a demo. |
 
 ## Quick start
@@ -102,6 +106,8 @@ make api            # FastAPI at http://localhost:8000/docs
 
 Real models: copy `.env.example` to `.env`, set `LLM_PROVIDER=openai_compatible` (Groq, OpenAI, Ollama, vLLM) or `anthropic`, add the key, then `make eval-real` (10 balanced held-out cases, to respect free-tier limits). A real provider with no key now fails with an error instead of quietly using the mock.
 
+Historical investigation: `POST /investigate {"unit_id": "U001", "cycle": 208}` investigates as of that cycle. Detection, the anomaly event (score, top sensors, message) and every tool use only rows up to it; the response includes the event. Out-of-range cycles return 400.
+
 MCP: `make mcp` exposes the same five tools over stdio for Claude Desktop / Claude Code (config snippet in `factory_copilot/mcp_server.py`).
 
 ## Repository map
@@ -115,11 +121,12 @@ factory_copilot/
   guardrails/  core.py (wrap_untrusted, InjectionDetector, Budget, ApprovalGate)
   llm/         base.py · clients.py (OpenAI-compatible, Anthropic, retry/backoff) · mock.py
   agent/       prompts.py · core.py (loop, ModelRouter, trace, fallback report)
+  citations.py exact SOP/ticket id parsing; checks a report cites only ids its investigation retrieved
   api.py       FastAPI: /incidents /investigate /approvals /metrics
   mcp_server.py
 dashboard/app.py    Streamlit
 evaluation/         cases.py (30 incidents with ground truth) · run.py (rules / llm_only / agent, results table)
-tests/              43 tests (data, analytics, incident cutoff, retrieval, guardrails, tools, agent, scoring, API)
+tests/              53 tests (data, analytics, incident cutoff, retrieval, guardrails, tools, agent, scoring, API, audit regressions)
 docs/DESIGN.md      the design document this was built from
 ```
 
@@ -129,6 +136,9 @@ docs/DESIGN.md      the design document this was built from
 - Cross-incident memory (what was approved last time on this unit) with the same untrusted-data treatment.
 - Real connectors (OPC-UA / historian) behind `query_sensors`; the tool schema would not change.
 - Separate sensor faults from calibration drift earlier (spike timing, not just counts): both systems miss this at first detection.
+- Single-pass RAG vs the iterative agent on identical frozen evidence, to see whether the extra loop earns its cost.
+- A missing-sensor policy: a NaN reading currently makes the RUL model raise; real feeds need validation or causal imputation.
+- Replace the pre-cutoff dashboard screenshot with a current live report.
 - A real-model injection test on held-out machines, and a larger frozen case set that was not used during development.
 - Measure what matters to a shift lead: time to a verified diagnosis with and without the copilot, against the rules workflow.
 - A proper LLM-as-judge for report *quality* (evidence sufficiency), not just root-cause/SOP/action accuracy.
