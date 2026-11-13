@@ -15,15 +15,21 @@ WINDOW = 10
 
 
 def make_features(df: pd.DataFrame, window: int = WINDOW) -> pd.DataFrame:
-    """Add rolling mean, rolling std and rolling slope per sensor, computed within each unit (no cross-unit leakage)."""
+    """Add rolling mean, rolling std and rolling slope per sensor, computed within each unit (no cross-unit leakage).
+
+    Causal: the feature at cycle t uses only cycles <= t of the same unit. Where a unit has too little history for a
+    statistic, the mean falls back to the current reading and the std/slope to 0 (never to a later observation).
+    """
     out = df.sort_values(["unit_id", "cycle"]).copy()
     g = out.groupby("unit_id", sort=False)
     for s in SENSOR_NAMES:
-        r = g[s].rolling(window, min_periods=3)
-        out[f"{s}__mean"] = r.mean().reset_index(level=0, drop=True)
-        out[f"{s}__std"] = r.std().reset_index(level=0, drop=True)
+        r = g[s].rolling(window, min_periods=1)
+        mean = r.mean().reset_index(level=0, drop=True)
+        std = r.std().reset_index(level=0, drop=True)
+        out[f"{s}__mean"] = mean.fillna(out[s])
+        out[f"{s}__std"] = std.fillna(0.0)
         out[f"{s}__slope"] = (out[s] - g[s].shift(window)).fillna(0.0) / window
-    return out.bfill().ffill()
+    return out
 
 
 def feature_columns(df: pd.DataFrame) -> list[str]:

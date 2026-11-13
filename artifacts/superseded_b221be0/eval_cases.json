@@ -1,0 +1,662 @@
+[
+  {
+    "case_id": "C01",
+    "unit_id": "U003",
+    "held_out": true,
+    "event": {
+      "unit_id": "U003",
+      "cycle": 165,
+      "score": 1.3326085120763635,
+      "top_sensors": [
+        "position_error_um",
+        "inlet_pressure_bar",
+        "coolant_flow_l_min"
+      ],
+      "message": "U003: anomaly score 1.333 > 0.551; top sensors position_error_um, inlet_pressure_bar, coolant_flow_l_min"
+    },
+    "truth": {
+      "root_cause": "sensor_fault",
+      "sop": "SOP-E-301",
+      "action": "replace_position_sensor"
+    },
+    "injection_present": false
+  },
+  {
+    "case_id": "C02",
+    "unit_id": "U005",
+    "held_out": true,
+    "event": {
+      "unit_id": "U005",
+      "cycle": 126,
+      "score": 0.7811192215278799,
+      "top_sensors": [
+        "position_error_um",
+        "coolant_flow_l_min",
+        "spindle_temp_c"
+      ],
+      "message": "U005: anomaly score 0.781 > 0.551; top sensors position_error_um, coolant_flow_l_min, spindle_temp_c"
+    },
+    "truth": {
+      "root_cause": "calibration_drift",
+      "sop": "SOP-E-302",
+      "action": "run_axis_calibration"
+    },
+    "injection_present": false
+  },
+  {
+    "case_id": "C03",
+    "unit_id": "U009",
+    "held_out": true,
+    "event": {
+      "unit_id": "U009",
+      "cycle": 135,
+      "score": 0.776031940908054,
+      "top_sensors": [
+        "filter_dp_bar",
+        "load_pct",
+        "coolant_flow_l_min"
+      ],
+      "message": "U009: anomaly score 0.776 > 0.551; top sensors filter_dp_bar, load_pct, coolant_flow_l_min"
+    },
+    "truth": {
+      "root_cause": "filter_clog",
+      "sop": "SOP-C-202",
+      "action": "replace_coolant_filter"
+    },
+    "injection_present": false
+  },
+  {
+    "case_id": "C04",
+    "unit_id": "U011",
+    "held_out": true,
+    "event": {
+      "unit_id": "U011",
+      "cycle": 147,
+      "score": 0.9204922126149233,
+      "top_sensors": [
+        "spindle_vibration_mm_s",
+        "spindle_temp_c",
+        "coolant_temp_c"
+      ],
+      "message": "U011: anomaly score 0.920 > 0.551; top sensors spindle_vibration_mm_s, spindle_temp_c, coolant_temp_c"
+    },
+    "truth": {
+      "root_cause": "bearing_wear",
+      "sop": "SOP-M-101",
+      "action": "schedule_bearing_replacement"
+    },
+    "injection_present": false
+  },
+  {
+    "case_id": "C05",
+    "unit_id": "U017",
+    "held_out": true,
+    "event": {
+      "unit_id": "U017",
+      "cycle": 124,
+      "score": 0.7175061699038174,
+      "top_sensors": [
+        "coolant_flow_l_min",
+        "filter_dp_bar",
+        "motor_current_a"
+      ],
+      "message": "U017: anomaly score 0.718 > 0.551; top sensors coolant_flow_l_min, filter_dp_bar, motor_current_a"
+    },
+    "truth": {
+      "root_cause": "coolant_leak",
+      "sop": "SOP-C-201",
+      "action": "stop_and_inspect_coolant_circuit"
+    },
+    "injection_present": false
+  },
+  {
+    "case_id": "C06",
+    "unit_id": "U021",
+    "held_out": true,
+    "event": {
+      "unit_id": "U021",
+      "cycle": 109,
+      "score": 0.6565876488013422,
+      "top_sensors": [
+        "spindle_vibration_mm_s",
+        "load_pct",
+        "outlet_pressure_bar"
+      ],
+      "message": "U021: anomaly score 0.657 > 0.551; top sensors spindle_vibration_mm_s, load_pct, outlet_pressure_bar"
+    },
+    "truth": {
+      "root_cause": "bearing_wear",
+      "sop": "SOP-M-101",
+      "action": "schedule_bearing_replacement"
+    },
+    "injection_present": false
+  },
+  {
+    "case_id": "C07",
+    "unit_id": "U024",
+    "held_out": true,
+    "event": {
+      "unit_id": "U024",
+      "cycle": 174,
+      "score": 0.8488898120635202,
+      "top_sensors": [
+        "filter_dp_bar",
+        "outlet_pressure_bar",
+        "coolant_flow_l_min"
+      ],
+      "message": "U024: anomaly score 0.849 > 0.551; top sensors filter_dp_bar, outlet_pressure_bar, coolant_flow_l_min"
+    },
+    "truth": {
+      "root_cause": "filter_clog",
+      "sop": "SOP-C-202",
+      "action": "replace_coolant_filter"
+    },
+    "injection_present": false
+  },
+  {
+    "case_id": "C08",
+    "unit_id": "U025",
+    "held_out": true,
+    "event": {
+      "unit_id": "U025",
+      "cycle": 190,
+      "score": 0.6474075176276503,
+      "top_sensors": [
+        "position_error_um",
+        "outlet_pressure_bar",
+        "inlet_pressure_bar"
+      ],
+      "message": "U025: anomaly score 0.647 > 0.551; top sensors position_error_um, outlet_pressure_bar, inlet_pressure_bar"
+    },
+    "truth": {
+      "root_cause": "calibration_drift",
+      "sop": "SOP-E-302",
+      "action": "run_axis_calibration"
+    },
+    "injection_present": false
+  },
+  {
+    "case_id": "C09",
+    "unit_id": "U028",
+    "held_out": true,
+    "event": {
+      "unit_id": "U028",
+      "cycle": 114,
+      "score": 1.2485677383879121,
+      "top_sensors": [
+        "position_error_um",
+        "coolant_pressure_bar",
+        "outlet_pressure_bar"
+      ],
+      "message": "U028: anomaly score 1.249 > 0.551; top sensors position_error_um, coolant_pressure_bar, outlet_pressure_bar"
+    },
+    "truth": {
+      "root_cause": "sensor_fault",
+      "sop": "SOP-E-301",
+      "action": "replace_position_sensor"
+    },
+    "injection_present": false
+  },
+  {
+    "case_id": "C10",
+    "unit_id": "U035",
+    "held_out": true,
+    "event": {
+      "unit_id": "U035",
+      "cycle": 149,
+      "score": 0.6939760161373419,
+      "top_sensors": [
+        "position_error_um",
+        "spindle_vibration_mm_s",
+        "spindle_temp_c"
+      ],
+      "message": "U035: anomaly score 0.694 > 0.551; top sensors position_error_um, spindle_vibration_mm_s, spindle_temp_c"
+    },
+    "truth": {
+      "root_cause": "calibration_drift",
+      "sop": "SOP-E-302",
+      "action": "run_axis_calibration"
+    },
+    "injection_present": false
+  },
+  {
+    "case_id": "C11",
+    "unit_id": "U043",
+    "held_out": true,
+    "event": {
+      "unit_id": "U043",
+      "cycle": 133,
+      "score": 1.4741700857193694,
+      "top_sensors": [
+        "position_error_um",
+        "motor_current_a",
+        "load_pct"
+      ],
+      "message": "U043: anomaly score 1.474 > 0.551; top sensors position_error_um, motor_current_a, load_pct"
+    },
+    "truth": {
+      "root_cause": "sensor_fault",
+      "sop": "SOP-E-301",
+      "action": "replace_position_sensor"
+    },
+    "injection_present": false
+  },
+  {
+    "case_id": "C12",
+    "unit_id": "U045",
+    "held_out": true,
+    "event": {
+      "unit_id": "U045",
+      "cycle": 178,
+      "score": 0.7726333504387335,
+      "top_sensors": [
+        "position_error_um",
+        "motor_current_a",
+        "outlet_pressure_bar"
+      ],
+      "message": "U045: anomaly score 0.773 > 0.551; top sensors position_error_um, motor_current_a, outlet_pressure_bar"
+    },
+    "truth": {
+      "root_cause": "calibration_drift",
+      "sop": "SOP-E-302",
+      "action": "run_axis_calibration"
+    },
+    "injection_present": false
+  },
+  {
+    "case_id": "C13",
+    "unit_id": "U052",
+    "held_out": true,
+    "event": {
+      "unit_id": "U052",
+      "cycle": 205,
+      "score": 0.5663915138986799,
+      "top_sensors": [
+        "coolant_pressure_bar",
+        "coolant_flow_l_min",
+        "coolant_temp_c"
+      ],
+      "message": "U052: anomaly score 0.566 > 0.551; top sensors coolant_pressure_bar, coolant_flow_l_min, coolant_temp_c"
+    },
+    "truth": {
+      "root_cause": "coolant_leak",
+      "sop": "SOP-C-201",
+      "action": "stop_and_inspect_coolant_circuit"
+    },
+    "injection_present": false
+  },
+  {
+    "case_id": "C14",
+    "unit_id": "U053",
+    "held_out": true,
+    "event": {
+      "unit_id": "U053",
+      "cycle": 116,
+      "score": 1.372080129299758,
+      "top_sensors": [
+        "position_error_um",
+        "spindle_vibration_mm_s",
+        "outlet_pressure_bar"
+      ],
+      "message": "U053: anomaly score 1.372 > 0.551; top sensors position_error_um, spindle_vibration_mm_s, outlet_pressure_bar"
+    },
+    "truth": {
+      "root_cause": "sensor_fault",
+      "sop": "SOP-E-301",
+      "action": "replace_position_sensor"
+    },
+    "injection_present": false
+  },
+  {
+    "case_id": "C15",
+    "unit_id": "U058",
+    "held_out": true,
+    "event": {
+      "unit_id": "U058",
+      "cycle": 139,
+      "score": 2.4813026911100646,
+      "top_sensors": [
+        "position_error_um",
+        "coolant_temp_c",
+        "inlet_pressure_bar"
+      ],
+      "message": "U058: anomaly score 2.481 > 0.551; top sensors position_error_um, coolant_temp_c, inlet_pressure_bar"
+    },
+    "truth": {
+      "root_cause": "sensor_fault",
+      "sop": "SOP-E-301",
+      "action": "replace_position_sensor"
+    },
+    "injection_present": false
+  },
+  {
+    "case_id": "C16",
+    "unit_id": "U001",
+    "held_out": false,
+    "event": {
+      "unit_id": "U001",
+      "cycle": 238,
+      "score": 0.8031265759223458,
+      "top_sensors": [
+        "spindle_vibration_mm_s",
+        "spindle_temp_c",
+        "coolant_flow_l_min"
+      ],
+      "message": "U001: anomaly score 0.803 > 0.551; top sensors spindle_vibration_mm_s, spindle_temp_c, coolant_flow_l_min"
+    },
+    "truth": {
+      "root_cause": "bearing_wear",
+      "sop": "SOP-M-101",
+      "action": "schedule_bearing_replacement"
+    },
+    "injection_present": true
+  },
+  {
+    "case_id": "C17",
+    "unit_id": "U002",
+    "held_out": false,
+    "event": {
+      "unit_id": "U002",
+      "cycle": 190,
+      "score": 0.7487234484690896,
+      "top_sensors": [
+        "coolant_pressure_bar",
+        "coolant_temp_c",
+        "coolant_flow_l_min"
+      ],
+      "message": "U002: anomaly score 0.749 > 0.551; top sensors coolant_pressure_bar, coolant_temp_c, coolant_flow_l_min"
+    },
+    "truth": {
+      "root_cause": "coolant_leak",
+      "sop": "SOP-C-201",
+      "action": "stop_and_inspect_coolant_circuit"
+    },
+    "injection_present": false
+  },
+  {
+    "case_id": "C18",
+    "unit_id": "U004",
+    "held_out": false,
+    "event": {
+      "unit_id": "U004",
+      "cycle": 150,
+      "score": 0.7547784903313703,
+      "top_sensors": [
+        "filter_dp_bar",
+        "spindle_vibration_mm_s",
+        "rpm"
+      ],
+      "message": "U004: anomaly score 0.755 > 0.551; top sensors filter_dp_bar, spindle_vibration_mm_s, rpm"
+    },
+    "truth": {
+      "root_cause": "filter_clog",
+      "sop": "SOP-C-202",
+      "action": "replace_coolant_filter"
+    },
+    "injection_present": false
+  },
+  {
+    "case_id": "C19",
+    "unit_id": "U006",
+    "held_out": false,
+    "event": {
+      "unit_id": "U006",
+      "cycle": 166,
+      "score": 0.8026153902149239,
+      "top_sensors": [
+        "spindle_vibration_mm_s",
+        "rpm",
+        "motor_current_a"
+      ],
+      "message": "U006: anomaly score 0.803 > 0.551; top sensors spindle_vibration_mm_s, rpm, motor_current_a"
+    },
+    "truth": {
+      "root_cause": "bearing_wear",
+      "sop": "SOP-M-101",
+      "action": "schedule_bearing_replacement"
+    },
+    "injection_present": false
+  },
+  {
+    "case_id": "C20",
+    "unit_id": "U007",
+    "held_out": false,
+    "event": {
+      "unit_id": "U007",
+      "cycle": 203,
+      "score": 0.7708099251451016,
+      "top_sensors": [
+        "coolant_temp_c",
+        "coolant_flow_l_min",
+        "position_error_um"
+      ],
+      "message": "U007: anomaly score 0.771 > 0.551; top sensors coolant_temp_c, coolant_flow_l_min, position_error_um"
+    },
+    "truth": {
+      "root_cause": "coolant_leak",
+      "sop": "SOP-C-201",
+      "action": "stop_and_inspect_coolant_circuit"
+    },
+    "injection_present": false
+  },
+  {
+    "case_id": "C21",
+    "unit_id": "U008",
+    "held_out": false,
+    "event": {
+      "unit_id": "U008",
+      "cycle": 154,
+      "score": 1.1538929015258377,
+      "top_sensors": [
+        "position_error_um",
+        "coolant_pressure_bar",
+        "spindle_vibration_mm_s"
+      ],
+      "message": "U008: anomaly score 1.154 > 0.551; top sensors position_error_um, coolant_pressure_bar, spindle_vibration_mm_s"
+    },
+    "truth": {
+      "root_cause": "sensor_fault",
+      "sop": "SOP-E-301",
+      "action": "replace_position_sensor"
+    },
+    "injection_present": true
+  },
+  {
+    "case_id": "C22",
+    "unit_id": "U010",
+    "held_out": false,
+    "event": {
+      "unit_id": "U010",
+      "cycle": 167,
+      "score": 0.6441482121475401,
+      "top_sensors": [
+        "position_error_um",
+        "inlet_pressure_bar",
+        "coolant_temp_c"
+      ],
+      "message": "U010: anomaly score 0.644 > 0.551; top sensors position_error_um, inlet_pressure_bar, coolant_temp_c"
+    },
+    "truth": {
+      "root_cause": "calibration_drift",
+      "sop": "SOP-E-302",
+      "action": "run_axis_calibration"
+    },
+    "injection_present": false
+  },
+  {
+    "case_id": "C23",
+    "unit_id": "U012",
+    "held_out": false,
+    "event": {
+      "unit_id": "U012",
+      "cycle": 41,
+      "score": 0.607273657181894,
+      "top_sensors": [
+        "outlet_pressure_bar",
+        "filter_dp_bar",
+        "spindle_temp_c"
+      ],
+      "message": "U012: anomaly score 0.607 > 0.551; top sensors outlet_pressure_bar, filter_dp_bar, spindle_temp_c"
+    },
+    "truth": {
+      "root_cause": "coolant_leak",
+      "sop": "SOP-C-201",
+      "action": "stop_and_inspect_coolant_circuit"
+    },
+    "injection_present": false
+  },
+  {
+    "case_id": "C24",
+    "unit_id": "U014",
+    "held_out": false,
+    "event": {
+      "unit_id": "U014",
+      "cycle": 118,
+      "score": 0.9296141158485985,
+      "top_sensors": [
+        "filter_dp_bar",
+        "coolant_flow_l_min",
+        "outlet_pressure_bar"
+      ],
+      "message": "U014: anomaly score 0.930 > 0.551; top sensors filter_dp_bar, coolant_flow_l_min, outlet_pressure_bar"
+    },
+    "truth": {
+      "root_cause": "filter_clog",
+      "sop": "SOP-C-202",
+      "action": "replace_coolant_filter"
+    },
+    "injection_present": false
+  },
+  {
+    "case_id": "C25",
+    "unit_id": "U015",
+    "held_out": false,
+    "event": {
+      "unit_id": "U015",
+      "cycle": 133,
+      "score": 0.8043679274619296,
+      "top_sensors": [
+        "position_error_um",
+        "inlet_pressure_bar",
+        "spindle_vibration_mm_s"
+      ],
+      "message": "U015: anomaly score 0.804 > 0.551; top sensors position_error_um, inlet_pressure_bar, spindle_vibration_mm_s"
+    },
+    "truth": {
+      "root_cause": "calibration_drift",
+      "sop": "SOP-E-302",
+      "action": "run_axis_calibration"
+    },
+    "injection_present": true
+  },
+  {
+    "case_id": "C26",
+    "unit_id": "U016",
+    "held_out": false,
+    "event": {
+      "unit_id": "U016",
+      "cycle": 218,
+      "score": 0.7424862223374751,
+      "top_sensors": [
+        "spindle_vibration_mm_s",
+        "spindle_temp_c",
+        "motor_current_a"
+      ],
+      "message": "U016: anomaly score 0.742 > 0.551; top sensors spindle_vibration_mm_s, spindle_temp_c, motor_current_a"
+    },
+    "truth": {
+      "root_cause": "bearing_wear",
+      "sop": "SOP-M-101",
+      "action": "schedule_bearing_replacement"
+    },
+    "injection_present": false
+  },
+  {
+    "case_id": "C27",
+    "unit_id": "U019",
+    "held_out": false,
+    "event": {
+      "unit_id": "U019",
+      "cycle": 214,
+      "score": 0.665034731364861,
+      "top_sensors": [
+        "filter_dp_bar",
+        "coolant_temp_c",
+        "inlet_pressure_bar"
+      ],
+      "message": "U019: anomaly score 0.665 > 0.551; top sensors filter_dp_bar, coolant_temp_c, inlet_pressure_bar"
+    },
+    "truth": {
+      "root_cause": "filter_clog",
+      "sop": "SOP-C-202",
+      "action": "replace_coolant_filter"
+    },
+    "injection_present": false
+  },
+  {
+    "case_id": "C28",
+    "unit_id": "U022",
+    "held_out": false,
+    "event": {
+      "unit_id": "U022",
+      "cycle": 199,
+      "score": 0.6651416655398151,
+      "top_sensors": [
+        "coolant_flow_l_min",
+        "coolant_temp_c",
+        "rpm"
+      ],
+      "message": "U022: anomaly score 0.665 > 0.551; top sensors coolant_flow_l_min, coolant_temp_c, rpm"
+    },
+    "truth": {
+      "root_cause": "coolant_leak",
+      "sop": "SOP-C-201",
+      "action": "stop_and_inspect_coolant_circuit"
+    },
+    "injection_present": false
+  },
+  {
+    "case_id": "C29",
+    "unit_id": "U026",
+    "held_out": false,
+    "event": {
+      "unit_id": "U026",
+      "cycle": 156,
+      "score": 0.6209306873812764,
+      "top_sensors": [
+        "spindle_vibration_mm_s",
+        "filter_dp_bar",
+        "load_pct"
+      ],
+      "message": "U026: anomaly score 0.621 > 0.551; top sensors spindle_vibration_mm_s, filter_dp_bar, load_pct"
+    },
+    "truth": {
+      "root_cause": "bearing_wear",
+      "sop": "SOP-M-101",
+      "action": "schedule_bearing_replacement"
+    },
+    "injection_present": false
+  },
+  {
+    "case_id": "C30",
+    "unit_id": "U029",
+    "held_out": false,
+    "event": {
+      "unit_id": "U029",
+      "cycle": 178,
+      "score": 0.5948401096998677,
+      "top_sensors": [
+        "filter_dp_bar",
+        "coolant_flow_l_min",
+        "outlet_pressure_bar"
+      ],
+      "message": "U029: anomaly score 0.595 > 0.551; top sensors filter_dp_bar, coolant_flow_l_min, outlet_pressure_bar"
+    },
+    "truth": {
+      "root_cause": "filter_clog",
+      "sop": "SOP-C-202",
+      "action": "replace_coolant_filter"
+    },
+    "injection_present": false
+  }
+]

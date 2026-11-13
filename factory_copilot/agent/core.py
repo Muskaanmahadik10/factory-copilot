@@ -148,12 +148,19 @@ class Agent:
 
     # ---- main entry ----
     def investigate(self, event: AnomalyEvent) -> AgentResult:
+        """Investigate an event using only data available at its cycle (the registry's incident cutoff)."""
+        with self.registry.as_of(event.cycle):
+            return self._investigate(event)
+
+    def _investigate(self, event: AnomalyEvent) -> AgentResult:
         incident_id = f"INC-{uuid.uuid4().hex[:8]}"
         budget = Budget(max_steps=self.max_steps, max_cost_usd=self.max_cost_usd)
         trace: list[TraceStep] = []
         t0 = time.perf_counter()
         incident = json.dumps(event.model_dump())
-        tools = json.dumps([{"name": s["name"], "description": s["description"], "permission": s["permission"], "args": list(s["input_schema"].get("properties", {}))} for s in self.registry.specs()])
+        # Only read tools are listed, matching the native tool schemas: offering open_ticket in text but not as a
+        # callable tool made one real model try to call it (provider HTTP 400 on case C05 of the first real run).
+        tools = json.dumps([{"name": s["name"], "description": s["description"], "permission": s["permission"], "args": list(s["input_schema"].get("properties", {}))} for s in self.registry.specs() if s["permission"] == "read"])
         report, error = None, ""
         try:
             while True:

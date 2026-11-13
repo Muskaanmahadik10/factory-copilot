@@ -2,283 +2,484 @@
   "provider": "env",
   "models": "openai/gpt-oss-20b/openai/gpt-oss-120b",
   "n_cases": 10,
+  "case_ids": [
+    "C01",
+    "C02",
+    "C03",
+    "C04",
+    "C05",
+    "C09",
+    "C08",
+    "C07",
+    "C06",
+    "C13"
+  ],
+  "selection": {
+    "limit": 10,
+    "held_out_only": true
+  },
+  "data_cutoff": "incident cycle",
+  "code_commit": "b221be0",
+  "run_at": "2026-11-13T16:22:39+00:00",
   "results": [
+    {
+      "system": "rules",
+      "cases": 10,
+      "held_out_cases": 10,
+      "root_cause_acc": 0.6,
+      "root_cause_acc_held_out": 0.6,
+      "sop_id_match": 0.6,
+      "action_keyword_match": 0.6,
+      "clean_runs": 10,
+      "recovered_runs": 0,
+      "failed_runs": 0,
+      "mean_cost_usd": 0.0,
+      "p50_latency_s": 0.01,
+      "p95_latency_s": 0.01,
+      "mean_steps": 1
+    },
     {
       "system": "llm_only (openai/gpt-oss-20b/openai/gpt-oss-120b)",
       "cases": 10,
-      "root_cause_acc": 0.7,
-      "sop_citation_acc": 0.0,
-      "action_acc": 0.9,
-      "injection_resistance": null,
-      "injection_cases": 0,
-      "mean_cost_usd": 0.00028,
-      "p50_latency_s": 1.36,
-      "p95_latency_s": 9.68,
+      "held_out_cases": 10,
+      "root_cause_acc": 0.4,
+      "root_cause_acc_held_out": 0.4,
+      "sop_id_match": 0.0,
+      "action_keyword_match": 0.7,
+      "clean_runs": 10,
+      "recovered_runs": 0,
+      "failed_runs": 0,
+      "mean_cost_usd": 0.00032,
+      "p50_latency_s": 1.8,
+      "p95_latency_s": 9.72,
       "mean_steps": 1
     },
     {
       "system": "agent (openai/gpt-oss-20b/openai/gpt-oss-120b)",
       "cases": 10,
-      "root_cause_acc": 1.0,
-      "sop_citation_acc": 1.0,
-      "action_acc": 1.0,
-      "injection_resistance": null,
-      "injection_cases": 0,
-      "mean_cost_usd": 0.00164,
-      "p50_latency_s": 46.8,
-      "p95_latency_s": 74.39,
-      "mean_steps": 4.3
+      "held_out_cases": 10,
+      "root_cause_acc": 0.7,
+      "root_cause_acc_held_out": 0.7,
+      "sop_id_match": 0.7,
+      "action_keyword_match": 0.7,
+      "clean_runs": 10,
+      "recovered_runs": 0,
+      "failed_runs": 0,
+      "mean_cost_usd": 0.00194,
+      "p50_latency_s": 74.71,
+      "p95_latency_s": 76.45,
+      "mean_steps": 4.8
     }
   ],
   "per_case": {
     "C01": {
+      "unit_id": "U003",
+      "held_out": true,
       "truth": {
         "root_cause": "sensor_fault",
         "sop": "SOP-E-301",
         "action": "replace_position_sensor"
       },
       "injection": false,
-      "llm_only": {
-        "root_cause": "sensor_fault",
-        "sop": "SOP-001#3",
-        "action": "Inspect and calibrate the position_error_um sensor on unit U003; verify wiring and signal integrity, replace the sensor if calibration fails, and re\u2011run diagnostics before returning to production.",
-        "cost": 0.00028335000000000003,
-        "steps": 1
-      },
-      "agent": {
-        "root_cause": "sensor_fault",
-        "sop": "SOP-E-301",
-        "action": "inspect_and_verify_position_sensor",
-        "cost": 0.0019307,
-        "steps": 5,
-        "injection_findings": 0,
-        "error": "",
-        "confidence": 0.92
-      }
-    },
-    "C02": {
-      "truth": {
+      "rules": {
         "root_cause": "calibration_drift",
         "sop": "SOP-E-302",
-        "action": "run_axis_calibration"
+        "action": "run_axis_calibration",
+        "cost": 0.0,
+        "steps": 1,
+        "error": "",
+        "latency_s": 0.02
       },
-      "injection": false,
       "llm_only": {
-        "root_cause": "bearing_wear",
-        "sop": "SOP-001: Bearing Inspection and Replacement (Section 3.2)",
-        "action": "Schedule a maintenance stop to inspect spindle bearings for wear, verify spindle alignment, and confirm coolant flow rate is within spec. Replace bearings if wear is detected and recalibrate position sensors after repair.",
-        "cost": 0.0002877,
-        "steps": 1
+        "root_cause": "insufficient evidence to pinpoint a single failure mode; data suggest possible bearing wear (high position_error_um) combined with minor coolant flow reduction, but no clear sensor fault or filter clog signatures",
+        "sop": "SOP-03: Mechanical Inspection and Bearing Wear Assessment, Section 4.2; SOP-07: Coolant System Check, Section 2.1",
+        "action": "Schedule a detailed mechanical inspection of spindle bearings and verify coolant pump performance; obtain additional sensor readings to confirm trends before any corrective work order is issued",
+        "cost": 0.00040979999999999993,
+        "steps": 1,
+        "error": "",
+        "fallback": false,
+        "latency_s": 2.09
       },
       "agent": {
         "root_cause": "calibration_drift",
         "sop": "SOP-E-302",
         "action": "perform_axis_calibration",
-        "cost": 0.00144,
-        "steps": 4,
-        "injection_findings": 0,
-        "error": "",
-        "confidence": 0.78
-      }
-    },
-    "C03": {
-      "truth": {
-        "root_cause": "filter_clog",
-        "sop": "SOP-C-202",
-        "action": "replace_coolant_filter"
-      },
-      "injection": false,
-      "llm_only": {
-        "root_cause": "filter_clog",
-        "sop": "SOP-FT-001 Section 3",
-        "action": "Schedule a maintenance stop to inspect and replace the coolant filter, verify coolant flow and outlet pressure after replacement, and re\u2011calibrate the filter differential pressure sensor before resuming production.",
-        "cost": 0.0002811,
-        "steps": 1
-      },
-      "agent": {
-        "root_cause": "filter_clog",
-        "sop": "SOP-C-202",
-        "action": "schedule_filter_replacement",
-        "cost": 0.0016110999999999999,
-        "steps": 4,
-        "injection_findings": 0,
-        "error": "",
-        "confidence": 0.85
-      }
-    },
-    "C04": {
-      "truth": {
-        "root_cause": "bearing_wear",
-        "sop": "SOP-M-101",
-        "action": "schedule_bearing_replacement"
-      },
-      "injection": false,
-      "llm_only": {
-        "root_cause": "bearing_wear",
-        "sop": "SOP-001: Bearing Inspection and Replacement (Section 3.2)",
-        "action": "Schedule a detailed bearing inspection for unit U011, including vibration analysis and visual inspection. If wear is confirmed, replace the spindle bearings and re\u2011calibrate spindle alignment. After replacement, monitor spindle vibration, temperature, and motor current for at least 20 cycles to verify return to baseline.",
-        "cost": 0.00027854999999999997,
-        "steps": 1
-      },
-      "agent": {
-        "root_cause": "bearing_wear",
-        "sop": "SOP-M-101",
-        "action": "schedule_bearing_replacement",
-        "cost": 0.00247905,
-        "steps": 6,
-        "injection_findings": 0,
-        "error": "",
-        "confidence": 0.92
-      }
-    },
-    "C05": {
-      "truth": {
-        "root_cause": "coolant_leak",
-        "sop": "SOP-C-201",
-        "action": "stop_and_inspect_coolant_circuit"
-      },
-      "injection": false,
-      "llm_only": {
-        "root_cause": "coolant_leak",
-        "sop": "SOP-CL-01#Leak_Detection",
-        "action": "Inspect coolant lines and seals for leaks; verify coolant reservoir level; purge air from system; replace any damaged hoses or seals; re\u2011calibrate coolant flow sensor after repair.",
-        "cost": 0.00026085,
-        "steps": 1
-      },
-      "agent": {
-        "root_cause": "coolant_leak",
-        "sop": "SOP-C-201",
-        "action": "stop_and_inspect_coolant_circuit",
-        "cost": 0.00167015,
-        "steps": 5,
-        "injection_findings": 0,
-        "error": "RuntimeError: LLM HTTP 400: {\"error\":{\"message\":\"Tool call validation failed: tool call validation failed: attempted to call tool 'open_ticket' which was not in request.tools\",\"type\":\"invalid_request_error\",\"code\":\"tool_use_failed\",\"failed_generation\":\"{\\\"name\\\": \\\"open_ticket\\\", \\\"arguments\\\": {\\\"unit_id\\\":\\\"U017\\\",\\\"root_cause\\\":\\\"coolant_leak\\\",\\\"recommended_action\\\":\\\"stop_and_inspect_coolant_circuit\\\",\\\"sop_reference\\\":",
-        "confidence": 0.92
-      }
-    },
-    "C09": {
-      "truth": {
-        "root_cause": "sensor_fault",
-        "sop": "SOP-E-301",
-        "action": "replace_position_sensor"
-      },
-      "injection": false,
-      "llm_only": {
-        "root_cause": "bearing_wear",
-        "sop": "SOP-001: Bearing Inspection and Replacement (Section 3.2)",
-        "action": "Schedule a detailed bearing inspection for unit U028, including vibration analysis and visual check for wear. If wear is confirmed, replace the affected bearings and re\u2011calibrate the position control loop before returning the unit to production.",
-        "cost": 0.00030389999999999996,
-        "steps": 1
-      },
-      "agent": {
-        "root_cause": "sensor_fault",
-        "sop": "SOP-E-301",
-        "action": "inspect_position_sensor",
-        "cost": 0.0011359500000000002,
+        "cost": 0.00132905,
         "steps": 3,
         "injection_findings": 0,
         "error": "",
-        "confidence": 0.8
+        "fallback": false,
+        "confidence": 0.8,
+        "latency_s": 16.98
       }
     },
-    "C08": {
+    "C02": {
+      "unit_id": "U005",
+      "held_out": true,
       "truth": {
         "root_cause": "calibration_drift",
         "sop": "SOP-E-302",
         "action": "run_axis_calibration"
       },
       "injection": false,
+      "rules": {
+        "root_cause": "calibration_drift",
+        "sop": "SOP-E-302",
+        "action": "run_axis_calibration",
+        "cost": 0.0,
+        "steps": 1,
+        "error": "",
+        "latency_s": 0.01
+      },
       "llm_only": {
-        "root_cause": "sensor_fault (position_error_um sensor drift)",
-        "sop": "SOP-001 Section 3",
-        "action": "Perform a detailed inspection and calibration of the position sensor assembly on unit U025; verify sensor wiring and connections, recalibrate according to SOP; if calibration fails, replace the sensor and re\u2011validate performance before resuming production.",
-        "cost": 0.0003144,
-        "steps": 1
+        "root_cause": "coolant_leak",
+        "sop": "SOP-CL-01#Leak_Detection_and_Repair",
+        "action": "Inspect coolant supply and return lines for leaks, verify filter integrity, and restore proper coolant flow to normal levels before resuming production.",
+        "cost": 0.0003189,
+        "steps": 1,
+        "error": "",
+        "fallback": false,
+        "latency_s": 1.51
       },
       "agent": {
         "root_cause": "calibration_drift",
         "sop": "SOP-E-302",
-        "action": "schedule_calibration_check",
-        "cost": 0.00139215,
-        "steps": 4,
+        "action": "run_axis_calibration",
+        "cost": 0.0020025,
+        "steps": 5,
         "injection_findings": 0,
         "error": "",
-        "confidence": 0.78
+        "fallback": false,
+        "confidence": 0.75,
+        "latency_s": 48.05
       }
     },
-    "C07": {
+    "C03": {
+      "unit_id": "U009",
+      "held_out": true,
       "truth": {
         "root_cause": "filter_clog",
         "sop": "SOP-C-202",
         "action": "replace_coolant_filter"
       },
       "injection": false,
+      "rules": {
+        "root_cause": "coolant_leak",
+        "sop": "SOP-C-201",
+        "action": "stop_and_inspect_coolant_circuit",
+        "cost": 0.0,
+        "steps": 1,
+        "error": "",
+        "latency_s": 0.01
+      },
       "llm_only": {
         "root_cause": "filter_clog",
-        "sop": "SOP-FT-001#Section3",
-        "action": "Schedule immediate filter inspection and replacement per SOP-FT-001 Section 3. Verify downstream outlet pressure and coolant flow after filter change, and monitor filter differential pressure for return to baseline.",
-        "cost": 0.00027404999999999997,
-        "steps": 1
+        "sop": "SOP-FT-001#Filter_Maintenance",
+        "action": "Inspect the filtration unit for clogging; clean or replace the filter as per SOP. Verify coolant flow rate after filter service and monitor filter differential pressure and coolant flow in subsequent cycles to confirm resolution.",
+        "cost": 0.00031035000000000004,
+        "steps": 1,
+        "error": "",
+        "fallback": false,
+        "latency_s": 1.24
       },
       "agent": {
         "root_cause": "filter_clog",
         "sop": "SOP-C-202",
-        "action": "inspect_and_replace_coolant_filter",
-        "cost": 0.0012995,
-        "steps": 3,
+        "action": "inspect_and_clean_coolant_filter",
+        "cost": 0.00202075,
+        "steps": 5,
         "injection_findings": 0,
         "error": "",
-        "confidence": 0.92
+        "fallback": false,
+        "confidence": 0.72,
+        "latency_s": 73.92
       }
     },
-    "C06": {
+    "C04": {
+      "unit_id": "U011",
+      "held_out": true,
       "truth": {
         "root_cause": "bearing_wear",
         "sop": "SOP-M-101",
         "action": "schedule_bearing_replacement"
       },
       "injection": false,
+      "rules": {
+        "root_cause": "bearing_wear",
+        "sop": "SOP-M-101",
+        "action": "schedule_bearing_replacement",
+        "cost": 0.0,
+        "steps": 1,
+        "error": "",
+        "latency_s": 0.01
+      },
       "llm_only": {
         "root_cause": "bearing_wear",
-        "sop": "SOP-001#Bearing_Inspection",
-        "action": "Schedule immediate inspection of spindle bearings, replace if wear exceeds limits, re\u2011balance spindle, and verify vibration levels after maintenance before resuming production.",
-        "cost": 0.00025529999999999997,
-        "steps": 1
+        "sop": "SOP-001#Section3.2",
+        "action": "Perform a detailed bearing inspection on unit U011, including vibration analysis and temperature checks. Replace bearings if wear is confirmed. Additionally, verify coolant flow and filter condition to rule out secondary issues.",
+        "cost": 0.00033705,
+        "steps": 1,
+        "error": "",
+        "fallback": false,
+        "latency_s": 1.27
       },
       "agent": {
         "root_cause": "bearing_wear",
         "sop": "SOP-M-101",
-        "action": "reduce_spindle_speed_and_schedule_bearing_replacement",
-        "cost": 0.00192525,
+        "action": "schedule_bearing_inspection",
+        "cost": 0.0021191,
         "steps": 5,
         "injection_findings": 0,
         "error": "",
-        "confidence": 0.85
+        "fallback": false,
+        "confidence": 0.7,
+        "latency_s": 75.77
       }
     },
-    "C13": {
+    "C05": {
+      "unit_id": "U017",
+      "held_out": true,
       "truth": {
         "root_cause": "coolant_leak",
         "sop": "SOP-C-201",
         "action": "stop_and_inspect_coolant_circuit"
       },
       "injection": false,
-      "llm_only": {
+      "rules": {
         "root_cause": "coolant_leak",
-        "sop": "SOP-CL-01:3.2",
-        "action": "Inspect coolant supply and return lines for leaks or blockages, verify pump operation, and restore coolant pressure and flow to nominal levels before resuming production.",
-        "cost": 0.00027225,
-        "steps": 1
+        "sop": "SOP-C-201",
+        "action": "stop_and_inspect_coolant_circuit",
+        "cost": 0.0,
+        "steps": 1,
+        "error": "",
+        "latency_s": 0.01
+      },
+      "llm_only": {
+        "root_cause": "filter_clog",
+        "sop": "SOP-FT-001#Filter_Maintenance",
+        "action": "Schedule a maintenance stop to inspect the coolant filter for clogging. Replace the filter if debris is found, then verify coolant flow rate returns to baseline. After replacement, monitor filter differential pressure and coolant flow for the next few cycles to confirm resolution.",
+        "cost": 0.00032385000000000004,
+        "steps": 1,
+        "error": "",
+        "fallback": false,
+        "latency_s": 1.24
+      },
+      "agent": {
+        "root_cause": "filter_clog",
+        "sop": "SOP-C-202",
+        "action": "inspect_and_replace_coolant_filter",
+        "cost": 0.0019253,
+        "steps": 5,
+        "injection_findings": 0,
+        "error": "",
+        "fallback": false,
+        "confidence": 0.85,
+        "latency_s": 76.45
+      }
+    },
+    "C09": {
+      "unit_id": "U028",
+      "held_out": true,
+      "truth": {
+        "root_cause": "sensor_fault",
+        "sop": "SOP-E-301",
+        "action": "replace_position_sensor"
+      },
+      "injection": false,
+      "rules": {
+        "root_cause": "calibration_drift",
+        "sop": "SOP-E-302",
+        "action": "run_axis_calibration",
+        "cost": 0.0,
+        "steps": 1,
+        "error": "",
+        "latency_s": 0.01
+      },
+      "llm_only": {
+        "root_cause": "filter_clog",
+        "sop": "SOP-FT-001#Filter_Maintenance",
+        "action": "Schedule a maintenance stop to inspect the coolant filter for clogging; clean or replace the filter as needed, then verify coolant flow and pressure return to baseline before resuming production.",
+        "cost": 0.00031769999999999997,
+        "steps": 1,
+        "error": "",
+        "fallback": false,
+        "latency_s": 1.08
+      },
+      "agent": {
+        "root_cause": "calibration_drift",
+        "sop": "SOP-E-302",
+        "action": "run_axis_calibration",
+        "cost": 0.00187765,
+        "steps": 5,
+        "injection_findings": 0,
+        "error": "",
+        "fallback": false,
+        "confidence": 0.8,
+        "latency_s": 75.67
+      }
+    },
+    "C08": {
+      "unit_id": "U025",
+      "held_out": true,
+      "truth": {
+        "root_cause": "calibration_drift",
+        "sop": "SOP-E-302",
+        "action": "run_axis_calibration"
+      },
+      "injection": false,
+      "rules": {
+        "root_cause": "calibration_drift",
+        "sop": "SOP-E-302",
+        "action": "run_axis_calibration",
+        "cost": 0.0,
+        "steps": 1,
+        "error": "",
+        "latency_s": 0.01
+      },
+      "llm_only": {
+        "root_cause": "bearing_wear",
+        "sop": "SOP-001: Bearing Inspection and Replacement \u2013 Section 3.2",
+        "action": "Schedule a detailed bearing inspection for unit U025, including vibration analysis and dimensional checks. If wear is confirmed, replace the affected bearings and re\u2011calibrate the position sensor. Document findings and update maintenance logs before resuming production.",
+        "cost": 0.00030179999999999996,
+        "steps": 1,
+        "error": "",
+        "fallback": false,
+        "latency_s": 6.55
+      },
+      "agent": {
+        "root_cause": "calibration_drift",
+        "sop": "SOP-E-302",
+        "action": "run_axis_calibration",
+        "cost": 0.00196235,
+        "steps": 5,
+        "injection_findings": 0,
+        "error": "",
+        "fallback": false,
+        "confidence": 0.72,
+        "latency_s": 71.28
+      }
+    },
+    "C07": {
+      "unit_id": "U024",
+      "held_out": true,
+      "truth": {
+        "root_cause": "filter_clog",
+        "sop": "SOP-C-202",
+        "action": "replace_coolant_filter"
+      },
+      "injection": false,
+      "rules": {
+        "root_cause": "coolant_leak",
+        "sop": "SOP-C-201",
+        "action": "stop_and_inspect_coolant_circuit",
+        "cost": 0.0,
+        "steps": 1,
+        "error": "",
+        "latency_s": 0.01
+      },
+      "llm_only": {
+        "root_cause": "filter_clog",
+        "sop": "SOP-FT-001#Filter_Maintenance",
+        "action": "Inspect and clean or replace the unit filter; verify coolant flow and outlet pressure after filter service; monitor sensor readings for return to baseline before resuming normal operation.",
+        "cost": 0.00029504999999999993,
+        "steps": 1,
+        "error": "",
+        "fallback": false,
+        "latency_s": 10.69
+      },
+      "agent": {
+        "root_cause": "filter_clog",
+        "sop": "SOP-C-202",
+        "action": "inspect_and_replace_coolant_filter",
+        "cost": 0.0019788,
+        "steps": 5,
+        "injection_findings": 0,
+        "error": "",
+        "fallback": false,
+        "confidence": 0.78,
+        "latency_s": 66.7
+      }
+    },
+    "C06": {
+      "unit_id": "U021",
+      "held_out": true,
+      "truth": {
+        "root_cause": "bearing_wear",
+        "sop": "SOP-M-101",
+        "action": "schedule_bearing_replacement"
+      },
+      "injection": false,
+      "rules": {
+        "root_cause": "bearing_wear",
+        "sop": "SOP-M-101",
+        "action": "schedule_bearing_replacement",
+        "cost": 0.0,
+        "steps": 1,
+        "error": "",
+        "latency_s": 0.01
+      },
+      "llm_only": {
+        "root_cause": "bearing_wear",
+        "sop": "SOP-03: Bearing Inspection and Replacement \u2013 Section 4.2",
+        "action": "Schedule a manual inspection of spindle bearings on unit U021, measure bearing runout, and replace bearings if wear exceeds limits. Verify spindle alignment and re\u2011calibrate load sensors after replacement.",
+        "cost": 0.00028395,
+        "steps": 1,
+        "error": "",
+        "fallback": false,
+        "latency_s": 9.72
+      },
+      "agent": {
+        "root_cause": "bearing_wear",
+        "sop": "SOP-M-101",
+        "action": "schedule_bearing_replacement",
+        "cost": 0.0019913500000000002,
+        "steps": 5,
+        "injection_findings": 0,
+        "error": "",
+        "fallback": false,
+        "confidence": 0.73,
+        "latency_s": 75.5
+      }
+    },
+    "C13": {
+      "unit_id": "U052",
+      "held_out": true,
+      "truth": {
+        "root_cause": "coolant_leak",
+        "sop": "SOP-C-201",
+        "action": "stop_and_inspect_coolant_circuit"
+      },
+      "injection": false,
+      "rules": {
+        "root_cause": "coolant_leak",
+        "sop": "SOP-C-201",
+        "action": "stop_and_inspect_coolant_circuit",
+        "cost": 0.0,
+        "steps": 1,
+        "error": "",
+        "latency_s": 0.01
+      },
+      "llm_only": {
+        "root_cause": "filter_clog",
+        "sop": "SOP-COOL-01 Section 3.2",
+        "action": "Inspect the coolant filter for blockage and replace if necessary; verify coolant pump performance and check for any leaks in the coolant circuit before resuming production.",
+        "cost": 0.00033360000000000003,
+        "steps": 1,
+        "error": "",
+        "fallback": false,
+        "latency_s": 9.49
       },
       "agent": {
         "root_cause": "coolant_leak",
         "sop": "SOP-C-201",
-        "action": "schedule_coolant_leak_inspection",
-        "cost": 0.0015087499999999999,
-        "steps": 4,
+        "action": "inspect_coolant_circuit_for_leak",
+        "cost": 0.0022055,
+        "steps": 5,
         "injection_findings": 0,
         "error": "",
-        "confidence": 0.85
+        "fallback": false,
+        "confidence": 0.6,
+        "latency_s": 76.99
       }
     }
   }

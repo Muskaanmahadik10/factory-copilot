@@ -4,6 +4,13 @@ from factory_copilot.config import ARTIFACTS_DIR, DATA_DIR
 
 
 @pytest.fixture(scope="session", autouse=True)
+def offline_models():
+    """Tests never call a real provider, even when a developer's .env configures one."""
+    from factory_copilot.config import settings
+    settings.llm_provider = "mock"
+
+
+@pytest.fixture(scope="session", autouse=True)
 def built_data():
     """Tests that need the real data/models build them once if missing (fast: ~20 s)."""
     if not (DATA_DIR / "generated" / "sensors.csv").exists():

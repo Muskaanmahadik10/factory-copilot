@@ -5,7 +5,7 @@
     "method": "held-out units, time order preserved"
   },
   "anomaly": {
-    "cycle_precision": 0.9803921568627451,
+    "cycle_precision": 0.9654062751407884,
     "cycle_recall": 0.7702182284980744,
     "units_detected": 15,
     "units_total": 15,
@@ -13,8 +13,8 @@
     "threshold": 0.5512553266293013
   },
   "rul": {
-    "rmse": 20.044359397437596,
-    "cmapss_score": 93169.66356713003,
+    "rmse": 19.98463924577318,
+    "cmapss_score": 90468.33273843114,
     "n": 3391
   },
   "drift_psi_degraded_vs_healthy": {

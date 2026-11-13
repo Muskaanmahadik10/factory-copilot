@@ -54,7 +54,9 @@ def main() -> dict:
     metrics["drift_psi_degraded_vs_healthy"] = {k: round(v, 3) for k, v in sorted(psi.items(), key=lambda kv: -kv[1])}
     ARTIFACTS_DIR.mkdir(parents=True, exist_ok=True)
     with open(ARTIFACTS_DIR / "models.pkl", "wb") as f:
-        pickle.dump({"anomaly": det, "rul": rul}, f)
+        # train_units: the machines whose run-to-failure history is "past fleet history" at runtime. The agent's
+        # sensor baseline and similar-unit tickets come only from these, never from held-out machines.
+        pickle.dump({"anomaly": det, "rul": rul, "train_units": sorted(train["unit_id"].unique())}, f)
     save_json(metrics, ARTIFACTS_DIR / "analytics_metrics.json")
     return metrics
 

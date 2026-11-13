@@ -2,7 +2,15 @@
 
 An AI agent that watches production-line sensor data, detects anomalies, investigates them by calling tools (sensor history, maintenance logs, SOP documents, a remaining-useful-life model), and writes an evidence-backed incident report with a recommended action. A human approves any action before it is executed. Every LLM call is routed by cost, logged, and evaluated against scripted incidents with known root causes.
 
-Owner: Muskaan Mahadik · Status: v1 plan, Nov 2026
+Owner: Muskaan Mahadik · Status: v1 plan, Nov 2026 (kept as written; see below for how the build differs)
+
+> **How the implementation differs from this plan** (updated 14 Nov 2026)
+> - Data: a synthetic generator only (60 machines, 12 sensors, C-MAPSS-style structure). There is no NASA download path.
+> - Injection cases: 3 planted attacks in the 30 cases, not 5.
+> - Validation: tool *inputs* and the final report are pydantic-validated; tool *outputs* are plain dictionaries that are scanned for injection text, not schema-validated. The report's fields are typed but not checked against the evidence.
+> - Incident cutoff: added after an audit. Every investigation sees only data up to the anomaly cycle; tickets written later (including the repair ticket at final failure) are invisible, and the sensor baseline comes from the machine's own first cycles or from training machines, never from held-out ones.
+> - Time savings: "20–60 minutes per alarm" and "under a minute" below are the motivating goal, not measured results. The prototype measures report latency only (see README), not engineer time.
+> - Budgets: step and cost limits are checked after each model call, so they bound a run approximately, not as a hard cap.
 
 ---
 

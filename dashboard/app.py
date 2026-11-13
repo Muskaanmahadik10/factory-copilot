@@ -42,7 +42,8 @@ if "results" not in st.session_state:
     st.session_state.results = {}
 
 st.title("Factory Copilot")
-st.caption(f"Evidence-backed anomaly investigation · LLM provider: **{settings.llm_provider}** · every work order needs human approval")
+st.caption(f"Evidence-backed anomaly investigation · models: **{agent.router.cheap.name} / {agent.router.strong.name}** · synthetic data · "
+           "the copilot sees only data up to the anomaly cycle · work orders are local approval records")
 
 left, right = st.columns([1, 2])
 with left:
@@ -63,7 +64,7 @@ with right:
     for s in chosen:
         fig.add_trace(go.Scatter(x=g["cycle"], y=g[s], name=s, mode="lines"))
     if ev:
-        fig.add_vline(x=ev.cycle, line_dash="dash", annotation_text="anomaly detected")
+        fig.add_vline(x=ev.cycle, line_dash="dash", annotation_text="anomaly detected · copilot's data cutoff")
     fig.update_layout(height=380, margin=dict(l=10, r=10, t=30, b=10), legend=dict(orientation="h"))
     st.plotly_chart(fig, use_container_width=True)
 
@@ -116,6 +117,7 @@ with st.sidebar:
         if q.exists():
             e = json.loads(q.read_text(encoding="utf-8"))
             st.subheader(f"Evaluation ({e['provider']})")
-            st.dataframe(pd.DataFrame(e["results"])[["system", "root_cause_acc", "sop_citation_acc", "action_acc", "mean_cost_usd"]], hide_index=True)
+            cols = [c for c in ("system", "cases", "root_cause_acc", "sop_id_match", "action_keyword_match", "clean_runs", "mean_cost_usd") if c in e["results"][0]]
+            st.dataframe(pd.DataFrame(e["results"])[cols], hide_index=True)
     st.subheader("Pending approvals")
     st.write(len(gate.pending()))

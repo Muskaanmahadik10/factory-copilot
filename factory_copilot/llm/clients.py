@@ -97,12 +97,27 @@ class AnthropicLLM(LLM):
         return LLMResponse(text=text, model=self.model, input_tokens=i, output_tokens=o, cost_usd=(i * self.price_in + o * self.price_out) / 1e6, latency_s=time.perf_counter() - t0, raw={"id": data.get("id")}, tool_calls=calls)
 
 
+class LLMConfigError(RuntimeError):
+    pass
+
+
+def _is_local(url: str) -> bool:
+    return any(h in url for h in ("://localhost", "://127.0.0.1", "://0.0.0.0", "://host.docker.internal", "://ollama"))
+
+
 def make_llm(tier: str) -> LLM:
-    """tier: 'cheap' or 'strong'. Returns MockLLM when LLM_PROVIDER=mock or no key is set."""
+    """tier: 'cheap' or 'strong'. The mock is used only when LLM_PROVIDER=mock is chosen explicitly.
+
+    A real provider with no key fails loudly instead of silently becoming the mock, so a demo or an evaluation
+    cannot look real while running the deterministic fixture. Local OpenAI-compatible servers (Ollama, vLLM on
+    localhost) may run without a key.
+    """
     from factory_copilot.llm.mock import MockLLM
 
-    if settings.llm_provider == "mock" or not settings.llm_api_key:
+    if settings.llm_provider == "mock":
         return MockLLM(name=f"mock-{tier}")
+    if not settings.llm_api_key and not (settings.llm_provider == "openai_compatible" and _is_local(settings.llm_base_url)):
+        raise LLMConfigError(f"LLM_PROVIDER={settings.llm_provider} but LLM_API_KEY is empty. Set the key, or set LLM_PROVIDER=mock to use the offline mock on purpose.")
     model = settings.cheap_model if tier == "cheap" else settings.strong_model
     pin = settings.cheap_price_in if tier == "cheap" else settings.strong_price_in
     pout = settings.cheap_price_out if tier == "cheap" else settings.strong_price_out

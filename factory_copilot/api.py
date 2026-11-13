@@ -15,6 +15,7 @@ from pydantic import BaseModel
 
 from factory_copilot import __version__
 from factory_copilot.agent import Agent
+from factory_copilot.analytics.features import make_features
 from factory_copilot.config import ARTIFACTS_DIR, DATA_DIR, settings
 from factory_copilot.data.schemas import AnomalyEvent
 from factory_copilot.guardrails import ApprovalGate
@@ -51,7 +52,9 @@ class DecisionIn(BaseModel):
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "version": __version__, "llm_provider": settings.llm_provider}
+    st = state()
+    # The *effective* models, so a run that fell back to the mock is visible as such.
+    return {"status": "ok", "version": __version__, "llm_provider": settings.llm_provider, "models": {"cheap": st.agent.router.cheap.name, "strong": st.agent.router.strong.name}}
 
 
 @app.get("/incidents")
@@ -71,8 +74,15 @@ def investigate(body: InvestigateIn):
     if events:
         ev = events[0]
     else:
-        last = g.sort_values("cycle").iloc[-1]
-        ev = AnomalyEvent(unit_id=body.unit_id, cycle=int(last["cycle"]), score=0.0, top_sensors=[s for s, _ in st.detector.contributions(last)[:3]], message="manual investigation")
+        # No detected anomaly: investigate manually at the requested cycle (default: the latest one). Contributions need
+        # the engineered rolling features, not a raw CSV row.
+        feats = make_features(g)
+        if body.cycle:
+            feats = feats[feats["cycle"] <= body.cycle]
+        if feats.empty:
+            raise HTTPException(400, f"no data for {body.unit_id} at or before cycle {body.cycle}")
+        last = feats.iloc[-1]
+        ev = AnomalyEvent(unit_id=body.unit_id, cycle=int(last["cycle"]), score=0.0, top_sensors=[s for s, _ in st.detector.contributions(last)[:3]], message="manual investigation (no anomaly detected)")
     if body.cycle:
         ev.cycle = body.cycle
     res = st.agent.investigate(ev)

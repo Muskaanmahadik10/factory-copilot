@@ -16,7 +16,7 @@ eval:
 	$(PY) -m evaluation.run --provider mock
 
 eval-real:
-	$(PY) -m evaluation.run --provider env --limit 10
+	$(PY) -m evaluation.run --provider env --held-out-only --limit 10
 
 api:
 	uvicorn factory_copilot.api:app --reload

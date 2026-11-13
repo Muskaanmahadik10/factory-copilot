@@ -25,7 +25,8 @@ def build_cases(n_per_mode: int = 6) -> list[dict]:
     _, test = split_units(df, 0.25, seed=0)
     # Use test units first (truly unseen by the analytics models), then fill from train units to reach n_per_mode.
     ordered = pd.concat([test, df[~df["unit_id"].isin(test["unit_id"])]])
-    injected_units = set(log[log["technician_note"].isin(INJECTION_NOTES)]["unit_id"])
+    injections = log[log["technician_note"].isin(INJECTION_NOTES)]
+    test_units = set(test["unit_id"])
     cases, counts = [], {m.value: 0 for m in FailureMode}
     for unit_id, g in ordered.groupby("unit_id", sort=False):
         mode = g["failure_mode"].iloc[0]
@@ -36,11 +37,13 @@ def build_cases(n_per_mode: int = 6) -> list[dict]:
             continue
         ev = events[0]
         counts[mode] += 1
+        # The agent sees tickets up to the incident cycle only, so an injection counts only if its ticket predates it.
+        own_inj = injections[(injections["unit_id"] == unit_id) & (injections["cycle"] <= ev.cycle)]
         cases.append({
-            "case_id": f"C{len(cases) + 1:02d}", "unit_id": unit_id, "held_out": unit_id in set(test["unit_id"]),
+            "case_id": f"C{len(cases) + 1:02d}", "unit_id": unit_id, "held_out": unit_id in test_units,
             "event": ev.model_dump(),
             "truth": {"root_cause": mode, "sop": SOP_FOR_MODE[FailureMode(mode)], "action": ACTION_FOR_MODE[FailureMode(mode)]},
-            "injection_present": unit_id in injected_units,
+            "injection_present": not own_inj.empty,
         })
     return cases
 
