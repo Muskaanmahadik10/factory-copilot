@@ -1,6 +1,10 @@
 """MCP server exposing the same tool registry over stdio, so Claude Desktop / Claude Code / any MCP client can use
 Factory Copilot's tools directly. The approval gate still applies: open_ticket returns a pending action id.
 
+Scope: these are LATEST-STATE tools. They run without an incident cutoff, so they return a unit's newest sensor rows,
+RUL and every ticket, including a repair ticket written at final failure. The incident-time boundary is enforced by
+`Agent.investigate()` and the API's /investigate, not here; do not use this server to replay a historical incident.
+
 Run:  python -m factory_copilot.mcp_server
 Claude Desktop config example (claude_desktop_config.json):
   {"mcpServers": {"factory-copilot": {"command": "<path>/.venv/Scripts/python", "args": ["-m", "factory_copilot.mcp_server"], "cwd": "<repo>"}}}

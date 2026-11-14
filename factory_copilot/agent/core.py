@@ -100,6 +100,9 @@ class Agent:
         self.trace_dir = trace_dir or ARTIFACTS_DIR / "traces"
 
     # ---- helpers ----
+    def _read_tools(self) -> set[str]:
+        return {s["name"] for s in self.registry.specs() if s["permission"] == "read"}
+
     def _native_tools(self) -> list[dict]:
         """Read tools as OpenAI function schemas, plus a 'finish' pseudo-tool. Write tools are deliberately not offered."""
         out = []
@@ -176,7 +179,9 @@ class Agent:
                 if tool == "finish":
                     break
                 ts = time.perf_counter()
-                out = self.registry.call(tool, args)
+                # Only the read tools offered to the model are dispatched. A write tool named anyway (open_ticket) is
+                # refused here, so an investigation cannot even create a pending work order; the API does that after.
+                out = self.registry.call(tool, args) if tool in self._read_tools() else {"error": f"tool '{tool}' is not available in an investigation", "available": sorted(self._read_tools())}
                 trace.append(TraceStep("tool", tool, input=args, output=out, latency_s=time.perf_counter() - ts))
                 if budget.steps >= self.max_steps:
                     break

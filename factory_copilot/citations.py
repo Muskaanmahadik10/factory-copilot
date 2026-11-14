@@ -40,25 +40,34 @@ def _strings(obj: Any) -> Iterable[str]:
 
 
 def retrieved_ids(tool_outputs: Iterable[tuple[str, Any]]) -> tuple[set[str], set[str]]:
-    """SOP and ticket ids that appeared in the tool outputs of one investigation, as (tool_name, output) pairs."""
+    """SOP and ticket ids that one investigation actually retrieved, from typed record fields only:
+    `search_sops` hits[].doc_id, `get_maintenance_history` tickets[].ticket_id, and `estimate_rul` policy_ref.
+    Free text is not used: a search query, an error message, or another SOP's cross-reference ("see SOP-C-201")
+    is not a retrieved record. Otherwise a model could make an invented id pass by searching for it."""
     sops, tickets = set(), set()
-    for _, out in tool_outputs:
-        for s in _strings(out):
-            sops.update(sop_ids(s))
-            tickets.update(ticket_ids(s))
+    for name, out in tool_outputs:
+        if not isinstance(out, dict):
+            continue
+        if name == "search_sops":
+            for h in out.get("hits") or []:
+                sops.update(sop_ids(str(h.get("doc_id", ""))))
+        elif name == "get_maintenance_history":
+            for t in out.get("tickets") or []:
+                tickets.update(ticket_ids(str(t.get("ticket_id", ""))))
+        elif name == "estimate_rul":
+            sops.update(sop_ids(str(out.get("policy_ref", ""))))
     return sops, tickets
 
 
 def check_report_citations(report: dict, tool_outputs: Iterable[tuple[str, Any]]) -> dict:
-    """Compare the ids a report cites with the ids its investigation actually retrieved.
+    """Compare the ids a report mentions anywhere (summary, cause, action, evidence, SOP reference) with the ids its
+    investigation actually retrieved.
 
-    Returns the cited ids and any that were *not* in the retrieved evidence (invented, or from outside this
-    investigation). `ok` is True only when every cited id was retrieved.
+    Returns the cited ids and any that were *not* in the retrieved records (invented, or from outside this
+    investigation). `ok` is True only when every mentioned id was retrieved.
     """
     got_sops, got_tickets = retrieved_ids(tool_outputs)
-    texts = [report.get("sop_reference", "")]
-    for e in report.get("evidence", []) or []:
-        texts += [e.get("citation", ""), e.get("summary", "")]
+    texts = list(_strings(report))
     cited_sops = sorted({i for t in texts for i in sop_ids(t)})
     cited_tickets = sorted({i for t in texts for i in ticket_ids(t)})
     unsupported = sorted(set(cited_sops) - got_sops) + sorted(set(cited_tickets) - got_tickets)

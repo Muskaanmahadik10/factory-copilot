@@ -19,6 +19,7 @@ from factory_copilot.analytics.features import make_features
 from factory_copilot.config import ARTIFACTS_DIR, DATA_DIR, settings
 from factory_copilot.data.schemas import AnomalyEvent
 from factory_copilot.guardrails import ApprovalGate
+from factory_copilot.guardrails.core import AlreadyDecided
 from factory_copilot.tools import build_default_registry
 
 app = FastAPI(title="Factory Copilot", version=__version__)
@@ -118,7 +119,10 @@ def decide(action_id: str, body: DecisionIn):
     st = state()
     if not st.gate.get(action_id):
         raise HTTPException(404, "unknown action")
-    pa = st.gate.decide(action_id, body.approve, body.by)
+    try:
+        pa = st.gate.decide(action_id, body.approve, body.by)
+    except AlreadyDecided as e:
+        raise HTTPException(409, str(e)) from e
     return pa.__dict__
 
 

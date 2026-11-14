@@ -7,6 +7,7 @@ allowed to change what the agent is permitted to do. Permissions live in the too
 from __future__ import annotations
 
 import re
+import threading
 import time
 from contextlib import contextmanager
 from contextvars import ContextVar
@@ -104,6 +105,10 @@ class Budget:
             raise BudgetExceeded("time limit reached")
 
 
+class AlreadyDecided(RuntimeError):
+    pass
+
+
 @dataclass
 class PendingAction:
     action_id: str
@@ -120,17 +125,23 @@ class ApprovalGate:
     def __init__(self):
         self._pending: dict[str, PendingAction] = {}
         self._n = 0
+        self._lock = threading.Lock()  # id allocation + insert are one step, so concurrent requests cannot share an id
 
     def request(self, unit_id: str, action: str, payload: dict) -> PendingAction:
-        self._n += 1
-        pa = PendingAction(action_id=f"A{self._n:04d}", unit_id=unit_id, action=action, payload=payload)
-        self._pending[pa.action_id] = pa
+        with self._lock:
+            self._n += 1
+            pa = PendingAction(action_id=f"A{self._n:04d}", unit_id=unit_id, action=action, payload=payload)
+            self._pending[pa.action_id] = pa
         return pa
 
     def decide(self, action_id: str, approve: bool, by: str) -> PendingAction:
-        pa = self._pending[action_id]
-        pa.status = "approved" if approve else "rejected"
-        pa.decided_by = by
+        """One decision per action: a second decision raises instead of silently overwriting the first."""
+        with self._lock:
+            pa = self._pending[action_id]
+            if pa.status != "pending":
+                raise AlreadyDecided(f"{action_id} was already {pa.status} by {pa.decided_by}")
+            pa.status = "approved" if approve else "rejected"
+            pa.decided_by = by
         return pa
 
     def get(self, action_id: str) -> PendingAction | None:

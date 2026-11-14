@@ -19,6 +19,8 @@
       "sop": "SOP-E-301",
       "action": "replace_position_sensor"
     },
+    "phase": "post_onset",
+    "onset_cycle": 157,
     "injection_present": false
   },
   {
@@ -41,6 +43,8 @@
       "sop": "SOP-E-302",
       "action": "run_axis_calibration"
     },
+    "phase": "post_onset",
+    "onset_cycle": 90,
     "injection_present": false
   },
   {
@@ -63,6 +67,8 @@
       "sop": "SOP-C-202",
       "action": "replace_coolant_filter"
     },
+    "phase": "post_onset",
+    "onset_cycle": 118,
     "injection_present": false
   },
   {
@@ -85,6 +91,8 @@
       "sop": "SOP-M-101",
       "action": "schedule_bearing_replacement"
     },
+    "phase": "post_onset",
+    "onset_cycle": 126,
     "injection_present": false
   },
   {
@@ -107,6 +115,8 @@
       "sop": "SOP-C-201",
       "action": "stop_and_inspect_coolant_circuit"
     },
+    "phase": "post_onset",
+    "onset_cycle": 95,
     "injection_present": false
   },
   {
@@ -129,6 +139,8 @@
       "sop": "SOP-M-101",
       "action": "schedule_bearing_replacement"
     },
+    "phase": "post_onset",
+    "onset_cycle": 90,
     "injection_present": false
   },
   {
@@ -151,6 +163,8 @@
       "sop": "SOP-C-202",
       "action": "replace_coolant_filter"
     },
+    "phase": "post_onset",
+    "onset_cycle": 142,
     "injection_present": false
   },
   {
@@ -173,6 +187,8 @@
       "sop": "SOP-E-302",
       "action": "run_axis_calibration"
     },
+    "phase": "post_onset",
+    "onset_cycle": 148,
     "injection_present": false
   },
   {
@@ -195,6 +211,8 @@
       "sop": "SOP-E-301",
       "action": "replace_position_sensor"
     },
+    "phase": "post_onset",
+    "onset_cycle": 109,
     "injection_present": false
   },
   {
@@ -217,6 +235,8 @@
       "sop": "SOP-E-302",
       "action": "run_axis_calibration"
     },
+    "phase": "post_onset",
+    "onset_cycle": 113,
     "injection_present": false
   },
   {
@@ -239,6 +259,8 @@
       "sop": "SOP-E-301",
       "action": "replace_position_sensor"
     },
+    "phase": "post_onset",
+    "onset_cycle": 126,
     "injection_present": false
   },
   {
@@ -261,6 +283,8 @@
       "sop": "SOP-E-302",
       "action": "run_axis_calibration"
     },
+    "phase": "post_onset",
+    "onset_cycle": 138,
     "injection_present": false
   },
   {
@@ -283,6 +307,8 @@
       "sop": "SOP-C-201",
       "action": "stop_and_inspect_coolant_circuit"
     },
+    "phase": "post_onset",
+    "onset_cycle": 163,
     "injection_present": false
   },
   {
@@ -305,6 +331,8 @@
       "sop": "SOP-E-301",
       "action": "replace_position_sensor"
     },
+    "phase": "post_onset",
+    "onset_cycle": 106,
     "injection_present": false
   },
   {
@@ -327,6 +355,8 @@
       "sop": "SOP-E-301",
       "action": "replace_position_sensor"
     },
+    "phase": "post_onset",
+    "onset_cycle": 127,
     "injection_present": false
   },
   {
@@ -349,6 +379,8 @@
       "sop": "SOP-M-101",
       "action": "schedule_bearing_replacement"
     },
+    "phase": "post_onset",
+    "onset_cycle": 209,
     "injection_present": true
   },
   {
@@ -371,6 +403,8 @@
       "sop": "SOP-C-201",
       "action": "stop_and_inspect_coolant_circuit"
     },
+    "phase": "post_onset",
+    "onset_cycle": 159,
     "injection_present": false
   },
   {
@@ -393,6 +427,8 @@
       "sop": "SOP-C-202",
       "action": "replace_coolant_filter"
     },
+    "phase": "post_onset",
+    "onset_cycle": 131,
     "injection_present": false
   },
   {
@@ -415,6 +451,8 @@
       "sop": "SOP-M-101",
       "action": "schedule_bearing_replacement"
     },
+    "phase": "post_onset",
+    "onset_cycle": 142,
     "injection_present": false
   },
   {
@@ -437,6 +475,8 @@
       "sop": "SOP-C-201",
       "action": "stop_and_inspect_coolant_circuit"
     },
+    "phase": "post_onset",
+    "onset_cycle": 174,
     "injection_present": false
   },
   {
@@ -459,6 +499,8 @@
       "sop": "SOP-E-301",
       "action": "replace_position_sensor"
     },
+    "phase": "post_onset",
+    "onset_cycle": 136,
     "injection_present": true
   },
   {
@@ -481,6 +523,8 @@
       "sop": "SOP-E-302",
       "action": "run_axis_calibration"
     },
+    "phase": "post_onset",
+    "onset_cycle": 140,
     "injection_present": false
   },
   {
@@ -499,10 +543,13 @@
       "message": "U012: anomaly score 0.607 > 0.551; top sensors outlet_pressure_bar, filter_dp_bar, spindle_temp_c"
     },
     "truth": {
-      "root_cause": "coolant_leak",
-      "sop": "SOP-C-201",
-      "action": "stop_and_inspect_coolant_circuit"
+      "root_cause": "no_fault_yet",
+      "sop": "SOP-G-001",
+      "action": "monitor_or_escalate",
+      "eventual_failure_mode": "coolant_leak"
     },
+    "phase": "pre_onset_false_alarm",
+    "onset_cycle": 130,
     "injection_present": false
   },
   {
@@ -525,6 +572,8 @@
       "sop": "SOP-C-202",
       "action": "replace_coolant_filter"
     },
+    "phase": "post_onset",
+    "onset_cycle": 90,
     "injection_present": false
   },
   {
@@ -547,6 +596,8 @@
       "sop": "SOP-E-302",
       "action": "run_axis_calibration"
     },
+    "phase": "post_onset",
+    "onset_cycle": 92,
     "injection_present": true
   },
   {
@@ -569,6 +620,8 @@
       "sop": "SOP-M-101",
       "action": "schedule_bearing_replacement"
     },
+    "phase": "post_onset",
+    "onset_cycle": 195,
     "injection_present": false
   },
   {
@@ -591,6 +644,8 @@
       "sop": "SOP-C-202",
       "action": "replace_coolant_filter"
     },
+    "phase": "post_onset",
+    "onset_cycle": 188,
     "injection_present": false
   },
   {
@@ -613,6 +668,8 @@
       "sop": "SOP-C-201",
       "action": "stop_and_inspect_coolant_circuit"
     },
+    "phase": "post_onset",
+    "onset_cycle": 176,
     "injection_present": false
   },
   {
@@ -635,6 +692,8 @@
       "sop": "SOP-M-101",
       "action": "schedule_bearing_replacement"
     },
+    "phase": "post_onset",
+    "onset_cycle": 120,
     "injection_present": false
   },
   {
@@ -657,6 +716,8 @@
       "sop": "SOP-C-202",
       "action": "replace_coolant_filter"
     },
+    "phase": "post_onset",
+    "onset_cycle": 136,
     "injection_present": false
   }
 ]

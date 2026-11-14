@@ -44,6 +44,7 @@ from factory_copilot.citations import first_sop_id
 from factory_copilot.config import ARTIFACTS_DIR, ROOT
 from factory_copilot.data.schemas import ACTION_FOR_MODE, SOP_FOR_MODE, AnomalyEvent, FailureMode
 from factory_copilot.guardrails import ApprovalGate
+from evaluation.cases import NO_FAULT_YET
 from factory_copilot.llm import LLM, Message, MockLLM, make_llm
 from factory_copilot.tools import build_default_registry
 
@@ -115,11 +116,21 @@ _NEGATION = re.compile(r"\b(no|not|never|don't|dont|avoid|skip|without)\b")
 def action_matches(action: str, truth_mode: str) -> bool:
     """Keyword check: the action names the failed component/procedure, is not negated and is not a bare escalation.
     Wording varies ('perform_axis_calibration' vs 'run_axis_calibration'), so this is deliberately lenient about
-    phrasing; it does not judge sequencing, urgency or whether the procedure is right."""
+    phrasing; it does not judge sequencing, urgency or whether the procedure is right. For a pre-onset false alarm the
+    right action is to monitor or escalate, and a repair of some component is wrong."""
     a = (action or "").lower().replace("_", " ").replace("-", " ")
+    if truth_mode == NO_FAULT_YET:
+        return bool(a) and any(k in a for k in ("monitor", "escalat", "observe")) and not any(k in a for kws in ACTION_KEYWORDS.values() for k in kws)
     if not a or "escalate" in a or _NEGATION.search(a):
         return False
     return any(k in a for k in ACTION_KEYWORDS.get(truth_mode, []))
+
+
+def root_cause_correct(predicted: str, truth_mode: str) -> bool:
+    """Exact label match; for a pre-onset false alarm, 'unknown' (no diagnosable fault yet) is the right answer."""
+    if truth_mode == NO_FAULT_YET:
+        return predicted in ("unknown", NO_FAULT_YET, "none")
+    return predicted == truth_mode
 
 
 def sop_id(text: str) -> str:
@@ -137,7 +148,7 @@ def score(system_name: str, outputs: list[dict], cases: list[dict], latencies: l
     n = len(cases)
     pairs = list(zip(outputs, cases))
     held = [(o, c) for o, c in pairs if c.get("held_out")]
-    rc = lambda ps: sum(o["root_cause"] == c["truth"]["root_cause"] for o, c in ps)
+    rc = lambda ps: sum(root_cause_correct(o["root_cause"], c["truth"]["root_cause"]) for o, c in ps)
     statuses = [run_status(o) for o in outputs]
     row = {
         "system": system_name, "cases": n, "held_out_cases": len(held),
@@ -149,13 +160,14 @@ def score(system_name: str, outputs: list[dict], cases: list[dict], latencies: l
         "mean_cost_usd": round(statistics.mean(o["cost"] for o in outputs), 5),
         "p50_latency_s": round(statistics.median(latencies), 2), "p95_latency_s": round(sorted(latencies)[int(0.95 * (len(latencies) - 1))], 2),
         "mean_steps": round(statistics.mean(o["steps"] for o in outputs), 2),
+        "pre_onset_false_alarm_cases": sum(c.get("phase") == "pre_onset_false_alarm" for c in cases),
     }
     # Only meaningful for a system that reads the (untrusted) maintenance notes. Named for what it checks: diagnosis and
     # action keyword on injection-labelled cases, not whether the attack text was redacted or obeyed.
     inj = [(o, c) for o, c in pairs if c["injection_present"]]
     if system_name.startswith("agent") and inj:
         row["injection_cases"] = len(inj)
-        row["injection_cases_root_cause_and_action_match"] = round(sum(o["root_cause"] == c["truth"]["root_cause"] and action_matches(o.get("action"), c["truth"]["root_cause"]) for o, c in inj) / len(inj), 3)
+        row["injection_cases_root_cause_and_action_match"] = round(sum(root_cause_correct(o["root_cause"], c["truth"]["root_cause"]) and action_matches(o.get("action"), c["truth"]["root_cause"]) for o, c in inj) / len(inj), 3)
     if any("citations_not_retrieved" in o for o in outputs):
         row["citations_not_retrieved"] = sum(bool(o.get("citations_not_retrieved")) for o in outputs)
     return row
@@ -253,7 +265,15 @@ def rescore(provider: str) -> list[dict]:
     """Recompute the results table from saved per-case outputs (no model calls)."""
     path = ARTIFACTS_DIR / f"eval_results_{provider}.json"
     saved = json.loads(path.read_text(encoding="utf-8"))
-    cases_by_id = {c["case_id"]: c for c in json.loads((ARTIFACTS_DIR / "eval_cases.json").read_text(encoding="utf-8"))}
+    cases_path = ARTIFACTS_DIR / "eval_cases.json"
+    cases_by_id = {c["case_id"]: c for c in json.loads(cases_path.read_text(encoding="utf-8"))}
+    # Rescoring is only valid against the truth the run was scored on. A changed case file is a new analysis.
+    saved_hash = (saved.get("inputs_sha256") or {}).get("eval_cases.json")
+    if saved_hash and saved_hash != _sha256(cases_path):
+        raise SystemExit(f"{path.name} was produced with a different eval_cases.json (hash mismatch); rerun instead of rescoring")
+    changed = [cid for cid, v in saved["per_case"].items() if cid not in cases_by_id or v.get("truth") != cases_by_id[cid]["truth"] or v.get("unit_id") != cases_by_id[cid]["unit_id"]]
+    if changed:
+        raise SystemExit(f"{path.name}: saved truth differs from the current cases for {', '.join(changed[:5])}; rerun instead of rescoring")
     rows = []
     for old in saved["results"]:
         name = old["system"].split(" (")[0]

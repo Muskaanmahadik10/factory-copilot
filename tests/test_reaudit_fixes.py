@@ -138,7 +138,7 @@ def test_report_citing_an_unretrieved_sop_is_flagged(registry, tmp_path):
 
 
 def test_citation_check_passes_when_the_sop_was_retrieved():
-    tool_outputs = [("search_sops", {"hits": [{"citation": "SOP-C-201 §2 Diagnosis", "text": "..."}]}), ("get_maintenance_history", {"tickets": [{"ticket_id": "T1006"}]})]
+    tool_outputs = [("search_sops", {"hits": [{"doc_id": "SOP-C-201", "citation": "SOP-C-201 §2 Diagnosis", "text": "..."}]}), ("get_maintenance_history", {"tickets": [{"ticket_id": "T1006"}]})]
     ok = check_report_citations({"sop_reference": "SOP-C-201", "evidence": [{"citation": "T1006"}]}, tool_outputs)
     assert ok["ok"] and ok["cited_sop_ids"] == ["SOP-C-201"] and ok["cited_ticket_ids"] == ["T1006"]
     bad = check_report_citations({"sop_reference": "SOP-C-201", "evidence": [{"citation": "T9999"}]}, tool_outputs)

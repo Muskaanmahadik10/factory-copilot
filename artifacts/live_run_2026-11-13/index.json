@@ -1,7 +1,7 @@
 {
   "source_run": "artifacts/eval_results_env.json (run_at 2026-11-13T16:22:39Z)",
   "how_linked": "Traces were saved locally by that run (artifacts/traces/ is gitignored). Each was matched to its case by unit_id, recorded cost and root cause; all 10 match one-to-one.",
-  "citation_check": "Computed afterwards, offline, with factory_copilot.citations.check_report_citations: does every SOP/ticket id the report cites appear in that investigation's tool outputs? It does not check that the passage supports the conclusion.",
+  "citation_check": "Computed afterwards, offline, with factory_copilot.citations.check_report_citations (version of 14 Nov, after the independent audit): every SOP/ticket id mentioned anywhere in the report must be a record that investigation's tools returned (search hit doc ids, ticket ids, the RUL policy reference). Search queries, error text and cross-references inside passages do not count. It does not check that the passage supports the conclusion.",
   "trace_limits": "LLM prompts are stored as their last 1,500 characters and outputs truncated to 2,000; tool outputs are stored in full.",
   "cases": [
     {
@@ -272,7 +272,6 @@
         ],
         "cited_ticket_ids": [],
         "retrieved_sop_ids": [
-          "SOP-C-201",
           "SOP-C-202",
           "SOP-G-003",
           "SOP-G-004"
