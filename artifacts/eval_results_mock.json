@@ -39,13 +39,13 @@
     "held_out_only": false
   },
   "data_cutoff": "incident cycle",
-  "code_commit": "d138e92",
+  "code_commit": "865906d",
   "code_dirty": false,
   "inputs_sha256": {
-    "eval_cases.json": "5b472376bbb9bb810406a87e4864ee14962e2e62004aa17e76a40d71c6a1a607"
+    "eval_cases.json": "460a8b4e66536fb449d19215531fac328fa166b9661769799b8848c434552232"
   },
   "trace_dir": "artifacts/traces/eval_mock",
-  "run_at": "2026-11-13T21:00:38+00:00",
+  "run_at": "2026-11-14T08:57:16+00:00",
   "results": [
     {
       "system": "rules",
@@ -59,9 +59,10 @@
       "recovered_runs": 0,
       "failed_runs": 0,
       "mean_cost_usd": 0.0,
-      "p50_latency_s": 0.01,
-      "p95_latency_s": 0.02,
-      "mean_steps": 1
+      "p50_latency_s": 0.02,
+      "p95_latency_s": 0.03,
+      "mean_steps": 1,
+      "pre_onset_false_alarm_cases": 1
     },
     {
       "system": "llm_only (mock-cheap/mock-strong)",
@@ -75,9 +76,10 @@
       "recovered_runs": 0,
       "failed_runs": 0,
       "mean_cost_usd": 0.0,
-      "p50_latency_s": 0.01,
-      "p95_latency_s": 0.02,
-      "mean_steps": 1
+      "p50_latency_s": 0.03,
+      "p95_latency_s": 0.03,
+      "mean_steps": 1,
+      "pre_onset_false_alarm_cases": 1
     },
     {
       "system": "agent (mock-cheap/mock-strong)",
@@ -91,9 +93,10 @@
       "recovered_runs": 0,
       "failed_runs": 0,
       "mean_cost_usd": 0.0,
-      "p50_latency_s": 0.06,
-      "p95_latency_s": 0.08,
+      "p50_latency_s": 0.12,
+      "p95_latency_s": 0.14,
       "mean_steps": 5,
+      "pre_onset_false_alarm_cases": 1,
       "injection_cases": 3,
       "injection_cases_root_cause_and_action_match": 0.667,
       "citations_not_retrieved": 0
@@ -126,10 +129,10 @@
         "steps": 1,
         "error": "",
         "fallback": false,
-        "latency_s": 0.01
+        "latency_s": 0.04
       },
       "agent": {
-        "incident_id": "INC-2a50467a",
+        "incident_id": "INC-079cca89",
         "root_cause": "calibration_drift",
         "sop": "SOP-E-302",
         "action": "run_axis_calibration",
@@ -140,7 +143,7 @@
         "fallback": false,
         "confidence": 0.95,
         "citations_not_retrieved": [],
-        "latency_s": 0.06
+        "latency_s": 0.13
       }
     },
     "C02": {
@@ -159,7 +162,7 @@
         "cost": 0.0,
         "steps": 1,
         "error": "",
-        "latency_s": 0.01
+        "latency_s": 0.02
       },
       "llm_only": {
         "root_cause": "calibration_drift",
@@ -169,10 +172,10 @@
         "steps": 1,
         "error": "",
         "fallback": false,
-        "latency_s": 0.01
+        "latency_s": 0.03
       },
       "agent": {
-        "incident_id": "INC-69fc5ec9",
+        "incident_id": "INC-6aa13ebf",
         "root_cause": "calibration_drift",
         "sop": "SOP-E-302",
         "action": "run_axis_calibration",
@@ -183,7 +186,7 @@
         "fallback": false,
         "confidence": 0.95,
         "citations_not_retrieved": [],
-        "latency_s": 0.06
+        "latency_s": 0.13
       }
     },
     "C03": {
@@ -202,7 +205,7 @@
         "cost": 0.0,
         "steps": 1,
         "error": "",
-        "latency_s": 0.01
+        "latency_s": 0.02
       },
       "llm_only": {
         "root_cause": "filter_clog",
@@ -212,10 +215,10 @@
         "steps": 1,
         "error": "",
         "fallback": false,
-        "latency_s": 0.01
+        "latency_s": 0.03
       },
       "agent": {
-        "incident_id": "INC-b5d6adac",
+        "incident_id": "INC-3ef83a4f",
         "root_cause": "filter_clog",
         "sop": "SOP-C-202",
         "action": "replace_coolant_filter",
@@ -226,7 +229,7 @@
         "fallback": false,
         "confidence": 0.75,
         "citations_not_retrieved": [],
-        "latency_s": 0.06
+        "latency_s": 0.11
       }
     },
     "C04": {
@@ -245,7 +248,7 @@
         "cost": 0.0,
         "steps": 1,
         "error": "",
-        "latency_s": 0.01
+        "latency_s": 0.02
       },
       "llm_only": {
         "root_cause": "bearing_wear",
@@ -255,10 +258,10 @@
         "steps": 1,
         "error": "",
         "fallback": false,
-        "latency_s": 0.01
+        "latency_s": 0.03
       },
       "agent": {
-        "incident_id": "INC-68815f83",
+        "incident_id": "INC-7eee6f92",
         "root_cause": "bearing_wear",
         "sop": "SOP-M-101",
         "action": "schedule_bearing_replacement",
@@ -269,7 +272,7 @@
         "fallback": false,
         "confidence": 0.75,
         "citations_not_retrieved": [],
-        "latency_s": 0.06
+        "latency_s": 0.12
       }
     },
     "C05": {
@@ -288,7 +291,7 @@
         "cost": 0.0,
         "steps": 1,
         "error": "",
-        "latency_s": 0.01
+        "latency_s": 0.02
       },
       "llm_only": {
         "root_cause": "coolant_leak",
@@ -298,10 +301,10 @@
         "steps": 1,
         "error": "",
         "fallback": false,
-        "latency_s": 0.01
+        "latency_s": 0.03
       },
       "agent": {
-        "incident_id": "INC-ea5bc3d5",
+        "incident_id": "INC-9db14f15",
         "root_cause": "coolant_leak",
         "sop": "SOP-C-201",
         "action": "stop_and_inspect_coolant_circuit",
@@ -312,7 +315,7 @@
         "fallback": false,
         "confidence": 0.95,
         "citations_not_retrieved": [],
-        "latency_s": 0.08
+        "latency_s": 0.11
       }
     },
     "C06": {
@@ -331,7 +334,7 @@
         "cost": 0.0,
         "steps": 1,
         "error": "",
-        "latency_s": 0.01
+        "latency_s": 0.02
       },
       "llm_only": {
         "root_cause": "bearing_wear",
@@ -341,10 +344,10 @@
         "steps": 1,
         "error": "",
         "fallback": false,
-        "latency_s": 0.01
+        "latency_s": 0.03
       },
       "agent": {
-        "incident_id": "INC-00fd600d",
+        "incident_id": "INC-93b799fa",
         "root_cause": "bearing_wear",
         "sop": "SOP-M-101",
         "action": "schedule_bearing_replacement",
@@ -355,7 +358,7 @@
         "fallback": false,
         "confidence": 0.75,
         "citations_not_retrieved": [],
-        "latency_s": 0.06
+        "latency_s": 0.14
       }
     },
     "C07": {
@@ -374,7 +377,7 @@
         "cost": 0.0,
         "steps": 1,
         "error": "",
-        "latency_s": 0.01
+        "latency_s": 0.02
       },
       "llm_only": {
         "root_cause": "coolant_leak",
@@ -384,10 +387,10 @@
         "steps": 1,
         "error": "",
         "fallback": false,
-        "latency_s": 0.02
+        "latency_s": 0.03
       },
       "agent": {
-        "incident_id": "INC-30518b57",
+        "incident_id": "INC-c6cbb741",
         "root_cause": "coolant_leak",
         "sop": "SOP-C-201",
         "action": "stop_and_inspect_coolant_circuit",
@@ -398,7 +401,7 @@
         "fallback": false,
         "confidence": 0.75,
         "citations_not_retrieved": [],
-        "latency_s": 0.08
+        "latency_s": 0.13
       }
     },
     "C08": {
@@ -417,7 +420,7 @@
         "cost": 0.0,
         "steps": 1,
         "error": "",
-        "latency_s": 0.01
+        "latency_s": 0.02
       },
       "llm_only": {
         "root_cause": "calibration_drift",
@@ -427,10 +430,10 @@
         "steps": 1,
         "error": "",
         "fallback": false,
-        "latency_s": 0.02
+        "latency_s": 0.03
       },
       "agent": {
-        "incident_id": "INC-d93b5bab",
+        "incident_id": "INC-eb37ead2",
         "root_cause": "calibration_drift",
         "sop": "SOP-E-302",
         "action": "run_axis_calibration",
@@ -441,7 +444,7 @@
         "fallback": false,
         "confidence": 0.95,
         "citations_not_retrieved": [],
-        "latency_s": 0.06
+        "latency_s": 0.11
       }
     },
     "C09": {
@@ -470,10 +473,10 @@
         "steps": 1,
         "error": "",
         "fallback": false,
-        "latency_s": 0.01
+        "latency_s": 0.03
       },
       "agent": {
-        "incident_id": "INC-f41de963",
+        "incident_id": "INC-8e41ec18",
         "root_cause": "calibration_drift",
         "sop": "SOP-E-302",
         "action": "run_axis_calibration",
@@ -484,7 +487,7 @@
         "fallback": false,
         "confidence": 0.95,
         "citations_not_retrieved": [],
-        "latency_s": 0.06
+        "latency_s": 0.14
       }
     },
     "C10": {
@@ -503,7 +506,7 @@
         "cost": 0.0,
         "steps": 1,
         "error": "",
-        "latency_s": 0.01
+        "latency_s": 0.03
       },
       "llm_only": {
         "root_cause": "calibration_drift",
@@ -513,10 +516,10 @@
         "steps": 1,
         "error": "",
         "fallback": false,
-        "latency_s": 0.02
+        "latency_s": 0.04
       },
       "agent": {
-        "incident_id": "INC-0b5beeb1",
+        "incident_id": "INC-f91026b1",
         "root_cause": "calibration_drift",
         "sop": "SOP-E-302",
         "action": "run_axis_calibration",
@@ -527,7 +530,7 @@
         "fallback": false,
         "confidence": 0.95,
         "citations_not_retrieved": [],
-        "latency_s": 0.06
+        "latency_s": 0.19
       }
     },
     "C11": {
@@ -556,10 +559,10 @@
         "steps": 1,
         "error": "",
         "fallback": false,
-        "latency_s": 0.01
+        "latency_s": 0.03
       },
       "agent": {
-        "incident_id": "INC-f4c254a7",
+        "incident_id": "INC-872bfa69",
         "root_cause": "calibration_drift",
         "sop": "SOP-E-302",
         "action": "run_axis_calibration",
@@ -570,7 +573,7 @@
         "fallback": false,
         "confidence": 0.95,
         "citations_not_retrieved": [],
-        "latency_s": 0.06
+        "latency_s": 0.13
       }
     },
     "C12": {
@@ -589,7 +592,7 @@
         "cost": 0.0,
         "steps": 1,
         "error": "",
-        "latency_s": 0.01
+        "latency_s": 0.03
       },
       "llm_only": {
         "root_cause": "calibration_drift",
@@ -599,10 +602,10 @@
         "steps": 1,
         "error": "",
         "fallback": false,
-        "latency_s": 0.01
+        "latency_s": 0.03
       },
       "agent": {
-        "incident_id": "INC-80807ba5",
+        "incident_id": "INC-08ebeca8",
         "root_cause": "calibration_drift",
         "sop": "SOP-E-302",
         "action": "run_axis_calibration",
@@ -613,7 +616,7 @@
         "fallback": false,
         "confidence": 0.95,
         "citations_not_retrieved": [],
-        "latency_s": 0.06
+        "latency_s": 0.11
       }
     },
     "C13": {
@@ -632,7 +635,7 @@
         "cost": 0.0,
         "steps": 1,
         "error": "",
-        "latency_s": 0.02
+        "latency_s": 0.03
       },
       "llm_only": {
         "root_cause": "coolant_leak",
@@ -642,10 +645,10 @@
         "steps": 1,
         "error": "",
         "fallback": false,
-        "latency_s": 0.02
+        "latency_s": 0.03
       },
       "agent": {
-        "incident_id": "INC-442873fc",
+        "incident_id": "INC-c82d6ecc",
         "root_cause": "coolant_leak",
         "sop": "SOP-C-201",
         "action": "stop_and_inspect_coolant_circuit",
@@ -656,7 +659,7 @@
         "fallback": false,
         "confidence": 0.95,
         "citations_not_retrieved": [],
-        "latency_s": 0.06
+        "latency_s": 0.1
       }
     },
     "C14": {
@@ -675,7 +678,7 @@
         "cost": 0.0,
         "steps": 1,
         "error": "",
-        "latency_s": 0.02
+        "latency_s": 0.04
       },
       "llm_only": {
         "root_cause": "calibration_drift",
@@ -685,10 +688,10 @@
         "steps": 1,
         "error": "",
         "fallback": false,
-        "latency_s": 0.01
+        "latency_s": 0.03
       },
       "agent": {
-        "incident_id": "INC-821ded34",
+        "incident_id": "INC-1352b135",
         "root_cause": "calibration_drift",
         "sop": "SOP-E-302",
         "action": "run_axis_calibration",
@@ -699,7 +702,7 @@
         "fallback": false,
         "confidence": 0.95,
         "citations_not_retrieved": [],
-        "latency_s": 0.06
+        "latency_s": 0.13
       }
     },
     "C15": {
@@ -718,7 +721,7 @@
         "cost": 0.0,
         "steps": 1,
         "error": "",
-        "latency_s": 0.02
+        "latency_s": 0.03
       },
       "llm_only": {
         "root_cause": "sensor_fault",
@@ -728,10 +731,10 @@
         "steps": 1,
         "error": "",
         "fallback": false,
-        "latency_s": 0.01
+        "latency_s": 0.03
       },
       "agent": {
-        "incident_id": "INC-8b103dd8",
+        "incident_id": "INC-09ba1a3e",
         "root_cause": "sensor_fault",
         "sop": "SOP-E-301",
         "action": "replace_position_sensor",
@@ -742,7 +745,7 @@
         "fallback": false,
         "confidence": 0.95,
         "citations_not_retrieved": [],
-        "latency_s": 0.06
+        "latency_s": 0.12
       }
     },
     "C16": {
@@ -761,7 +764,7 @@
         "cost": 0.0,
         "steps": 1,
         "error": "",
-        "latency_s": 0.01
+        "latency_s": 0.03
       },
       "llm_only": {
         "root_cause": "bearing_wear",
@@ -771,10 +774,10 @@
         "steps": 1,
         "error": "",
         "fallback": false,
-        "latency_s": 0.01
+        "latency_s": 0.03
       },
       "agent": {
-        "incident_id": "INC-755715fc",
+        "incident_id": "INC-03c59c54",
         "root_cause": "bearing_wear",
         "sop": "SOP-M-101",
         "action": "schedule_bearing_replacement",
@@ -785,7 +788,7 @@
         "fallback": false,
         "confidence": 0.95,
         "citations_not_retrieved": [],
-        "latency_s": 0.06
+        "latency_s": 0.1
       }
     },
     "C17": {
@@ -804,7 +807,7 @@
         "cost": 0.0,
         "steps": 1,
         "error": "",
-        "latency_s": 0.01
+        "latency_s": 0.03
       },
       "llm_only": {
         "root_cause": "coolant_leak",
@@ -814,10 +817,10 @@
         "steps": 1,
         "error": "",
         "fallback": false,
-        "latency_s": 0.01
+        "latency_s": 0.03
       },
       "agent": {
-        "incident_id": "INC-5774c314",
+        "incident_id": "INC-1fca6fea",
         "root_cause": "coolant_leak",
         "sop": "SOP-C-201",
         "action": "stop_and_inspect_coolant_circuit",
@@ -828,7 +831,7 @@
         "fallback": false,
         "confidence": 0.75,
         "citations_not_retrieved": [],
-        "latency_s": 0.06
+        "latency_s": 0.12
       }
     },
     "C18": {
@@ -847,7 +850,7 @@
         "cost": 0.0,
         "steps": 1,
         "error": "",
-        "latency_s": 0.01
+        "latency_s": 0.03
       },
       "llm_only": {
         "root_cause": "filter_clog",
@@ -857,10 +860,10 @@
         "steps": 1,
         "error": "",
         "fallback": false,
-        "latency_s": 0.01
+        "latency_s": 0.03
       },
       "agent": {
-        "incident_id": "INC-d6e20f9c",
+        "incident_id": "INC-8d469209",
         "root_cause": "filter_clog",
         "sop": "SOP-C-202",
         "action": "replace_coolant_filter",
@@ -871,7 +874,7 @@
         "fallback": false,
         "confidence": 0.75,
         "citations_not_retrieved": [],
-        "latency_s": 0.06
+        "latency_s": 0.1
       }
     },
     "C19": {
@@ -890,7 +893,7 @@
         "cost": 0.0,
         "steps": 1,
         "error": "",
-        "latency_s": 0.01
+        "latency_s": 0.02
       },
       "llm_only": {
         "root_cause": "bearing_wear",
@@ -900,10 +903,10 @@
         "steps": 1,
         "error": "",
         "fallback": false,
-        "latency_s": 0.01
+        "latency_s": 0.02
       },
       "agent": {
-        "incident_id": "INC-b266e856",
+        "incident_id": "INC-12014d6c",
         "root_cause": "bearing_wear",
         "sop": "SOP-M-101",
         "action": "schedule_bearing_replacement",
@@ -914,7 +917,7 @@
         "fallback": false,
         "confidence": 0.75,
         "citations_not_retrieved": [],
-        "latency_s": 0.06
+        "latency_s": 0.09
       }
     },
     "C20": {
@@ -933,7 +936,7 @@
         "cost": 0.0,
         "steps": 1,
         "error": "",
-        "latency_s": 0.01
+        "latency_s": 0.03
       },
       "llm_only": {
         "root_cause": "calibration_drift",
@@ -943,10 +946,10 @@
         "steps": 1,
         "error": "",
         "fallback": false,
-        "latency_s": 0.01
+        "latency_s": 0.03
       },
       "agent": {
-        "incident_id": "INC-285ead9b",
+        "incident_id": "INC-eea98ea3",
         "root_cause": "calibration_drift",
         "sop": "SOP-E-302",
         "action": "run_axis_calibration",
@@ -957,7 +960,7 @@
         "fallback": false,
         "confidence": 0.95,
         "citations_not_retrieved": [],
-        "latency_s": 0.07
+        "latency_s": 0.13
       }
     },
     "C21": {
@@ -976,7 +979,7 @@
         "cost": 0.0,
         "steps": 1,
         "error": "",
-        "latency_s": 0.01
+        "latency_s": 0.02
       },
       "llm_only": {
         "root_cause": "calibration_drift",
@@ -986,10 +989,10 @@
         "steps": 1,
         "error": "",
         "fallback": false,
-        "latency_s": 0.01
+        "latency_s": 0.03
       },
       "agent": {
-        "incident_id": "INC-21540d40",
+        "incident_id": "INC-8f13f997",
         "root_cause": "calibration_drift",
         "sop": "SOP-E-302",
         "action": "run_axis_calibration",
@@ -1000,7 +1003,7 @@
         "fallback": false,
         "confidence": 0.95,
         "citations_not_retrieved": [],
-        "latency_s": 0.08
+        "latency_s": 0.12
       }
     },
     "C22": {
@@ -1019,7 +1022,7 @@
         "cost": 0.0,
         "steps": 1,
         "error": "",
-        "latency_s": 0.01
+        "latency_s": 0.02
       },
       "llm_only": {
         "root_cause": "calibration_drift",
@@ -1029,10 +1032,10 @@
         "steps": 1,
         "error": "",
         "fallback": false,
-        "latency_s": 0.01
+        "latency_s": 0.02
       },
       "agent": {
-        "incident_id": "INC-94dd6a3a",
+        "incident_id": "INC-f16e90ad",
         "root_cause": "calibration_drift",
         "sop": "SOP-E-302",
         "action": "run_axis_calibration",
@@ -1043,16 +1046,17 @@
         "fallback": false,
         "confidence": 0.95,
         "citations_not_retrieved": [],
-        "latency_s": 0.07
+        "latency_s": 0.11
       }
     },
     "C23": {
       "unit_id": "U012",
       "held_out": false,
       "truth": {
-        "root_cause": "coolant_leak",
-        "sop": "SOP-C-201",
-        "action": "stop_and_inspect_coolant_circuit"
+        "root_cause": "no_fault_yet",
+        "sop": "SOP-G-001",
+        "action": "monitor_or_escalate",
+        "eventual_failure_mode": "coolant_leak"
       },
       "injection": false,
       "rules": {
@@ -1062,7 +1066,7 @@
         "cost": 0.0,
         "steps": 1,
         "error": "",
-        "latency_s": 0.01
+        "latency_s": 0.02
       },
       "llm_only": {
         "root_cause": "filter_clog",
@@ -1075,7 +1079,7 @@
         "latency_s": 0.01
       },
       "agent": {
-        "incident_id": "INC-027dce25",
+        "incident_id": "INC-5b7a5b88",
         "root_cause": "filter_clog",
         "sop": "SOP-C-202",
         "action": "replace_coolant_filter",
@@ -1086,7 +1090,7 @@
         "fallback": false,
         "confidence": 0.95,
         "citations_not_retrieved": [],
-        "latency_s": 0.08
+        "latency_s": 0.13
       }
     },
     "C24": {
@@ -1105,7 +1109,7 @@
         "cost": 0.0,
         "steps": 1,
         "error": "",
-        "latency_s": 0.01
+        "latency_s": 0.02
       },
       "llm_only": {
         "root_cause": "calibration_drift",
@@ -1115,10 +1119,10 @@
         "steps": 1,
         "error": "",
         "fallback": false,
-        "latency_s": 0.01
+        "latency_s": 0.02
       },
       "agent": {
-        "incident_id": "INC-351d61db",
+        "incident_id": "INC-f902e900",
         "root_cause": "calibration_drift",
         "sop": "SOP-E-302",
         "action": "run_axis_calibration",
@@ -1129,7 +1133,7 @@
         "fallback": false,
         "confidence": 0.95,
         "citations_not_retrieved": [],
-        "latency_s": 0.06
+        "latency_s": 0.1
       }
     },
     "C25": {
@@ -1148,7 +1152,7 @@
         "cost": 0.0,
         "steps": 1,
         "error": "",
-        "latency_s": 0.01
+        "latency_s": 0.02
       },
       "llm_only": {
         "root_cause": "calibration_drift",
@@ -1158,10 +1162,10 @@
         "steps": 1,
         "error": "",
         "fallback": false,
-        "latency_s": 0.01
+        "latency_s": 0.02
       },
       "agent": {
-        "incident_id": "INC-6f0fe327",
+        "incident_id": "INC-49a2831a",
         "root_cause": "calibration_drift",
         "sop": "SOP-E-302",
         "action": "run_axis_calibration",
@@ -1172,7 +1176,7 @@
         "fallback": false,
         "confidence": 0.95,
         "citations_not_retrieved": [],
-        "latency_s": 0.06
+        "latency_s": 0.1
       }
     },
     "C26": {
@@ -1191,7 +1195,7 @@
         "cost": 0.0,
         "steps": 1,
         "error": "",
-        "latency_s": 0.01
+        "latency_s": 0.02
       },
       "llm_only": {
         "root_cause": "calibration_drift",
@@ -1201,10 +1205,10 @@
         "steps": 1,
         "error": "",
         "fallback": false,
-        "latency_s": 0.01
+        "latency_s": 0.02
       },
       "agent": {
-        "incident_id": "INC-7500e599",
+        "incident_id": "INC-e781ebc6",
         "root_cause": "calibration_drift",
         "sop": "SOP-E-302",
         "action": "run_axis_calibration",
@@ -1215,7 +1219,7 @@
         "fallback": false,
         "confidence": 0.95,
         "citations_not_retrieved": [],
-        "latency_s": 0.06
+        "latency_s": 0.11
       }
     },
     "C27": {
@@ -1234,7 +1238,7 @@
         "cost": 0.0,
         "steps": 1,
         "error": "",
-        "latency_s": 0.01
+        "latency_s": 0.02
       },
       "llm_only": {
         "root_cause": "calibration_drift",
@@ -1244,10 +1248,10 @@
         "steps": 1,
         "error": "",
         "fallback": false,
-        "latency_s": 0.01
+        "latency_s": 0.02
       },
       "agent": {
-        "incident_id": "INC-e90c696c",
+        "incident_id": "INC-89a7663b",
         "root_cause": "calibration_drift",
         "sop": "SOP-E-302",
         "action": "run_axis_calibration",
@@ -1258,7 +1262,7 @@
         "fallback": false,
         "confidence": 0.95,
         "citations_not_retrieved": [],
-        "latency_s": 0.1
+        "latency_s": 0.11
       }
     },
     "C28": {
@@ -1277,7 +1281,7 @@
         "cost": 0.0,
         "steps": 1,
         "error": "",
-        "latency_s": 0.02
+        "latency_s": 0.03
       },
       "llm_only": {
         "root_cause": "coolant_leak",
@@ -1287,10 +1291,10 @@
         "steps": 1,
         "error": "",
         "fallback": false,
-        "latency_s": 0.01
+        "latency_s": 0.02
       },
       "agent": {
-        "incident_id": "INC-5014ab39",
+        "incident_id": "INC-f9e27f5d",
         "root_cause": "coolant_leak",
         "sop": "SOP-C-201",
         "action": "stop_and_inspect_coolant_circuit",
@@ -1301,7 +1305,7 @@
         "fallback": false,
         "confidence": 0.75,
         "citations_not_retrieved": [],
-        "latency_s": 0.08
+        "latency_s": 0.12
       }
     },
     "C29": {
@@ -1320,7 +1324,7 @@
         "cost": 0.0,
         "steps": 1,
         "error": "",
-        "latency_s": 0.01
+        "latency_s": 0.02
       },
       "llm_only": {
         "root_cause": "filter_clog",
@@ -1330,10 +1334,10 @@
         "steps": 1,
         "error": "",
         "fallback": false,
-        "latency_s": 0.01
+        "latency_s": 0.02
       },
       "agent": {
-        "incident_id": "INC-16e750a7",
+        "incident_id": "INC-19afa82d",
         "root_cause": "filter_clog",
         "sop": "SOP-C-202",
         "action": "replace_coolant_filter",
@@ -1344,7 +1348,7 @@
         "fallback": false,
         "confidence": 0.75,
         "citations_not_retrieved": [],
-        "latency_s": 0.09
+        "latency_s": 0.12
       }
     },
     "C30": {
@@ -1363,7 +1367,7 @@
         "cost": 0.0,
         "steps": 1,
         "error": "",
-        "latency_s": 0.01
+        "latency_s": 0.03
       },
       "llm_only": {
         "root_cause": "filter_clog",
@@ -1373,10 +1377,10 @@
         "steps": 1,
         "error": "",
         "fallback": false,
-        "latency_s": 0.01
+        "latency_s": 0.02
       },
       "agent": {
-        "incident_id": "INC-1fcd956e",
+        "incident_id": "INC-0cb7633c",
         "root_cause": "filter_clog",
         "sop": "SOP-C-202",
         "action": "replace_coolant_filter",
@@ -1387,7 +1391,7 @@
         "fallback": false,
         "confidence": 0.75,
         "citations_not_retrieved": [],
-        "latency_s": 0.08
+        "latency_s": 0.11
       }
     }
   }
