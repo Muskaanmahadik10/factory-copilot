@@ -4,7 +4,7 @@
 
 Built as a portfolio project for AI-engineer roles in manufacturing. Everything runs on a laptop with no API key (deterministic mock mode); with a key it uses real models through any OpenAI-compatible or Anthropic endpoint.
 
-![CI](https://github.com/Muskaanmahadik10/factory-copilot/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/Muskaanmahadik10/factory-copilot/actions/workflows/ci.yml/badge.svg) [![M8ven](https://m8ven.ai/badge/mcp/muskaanmahadik10/factory-copilot?variant=verified)](https://m8ven.ai/mcp/muskaanmahadik10/factory-copilot?s=readme) ![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)
 
 ## What it does
 
@@ -108,7 +108,7 @@ Real models: copy `.env.example` to `.env`, set `LLM_PROVIDER=openai_compatible`
 
 Historical investigation: `POST /investigate {"unit_id": "U001", "cycle": 208}` investigates as of that cycle. Detection, the anomaly event (score, top sensors, message) and every tool use only rows up to it; the response includes the event. Out-of-range cycles return 400.
 
-MCP: `make mcp` exposes the same five tools over stdio for Claude Desktop / Claude Code (config snippet in `factory_copilot/mcp_server.py`). These are latest-state tools with no incident cutoff: they return a unit's newest data, including a repair ticket written at final failure. The incident-time boundary applies to `Agent.investigate()` and the API's `/investigate`, not to MCP.
+MCP: `make mcp` exposes six tools over stdio (the five agent tools plus `list_pending_approvals`) for Claude Desktop / Claude Code (config snippet in `factory_copilot/mcp_server.py`). These are latest-state tools with no incident cutoff: they return a unit's newest data, including a repair ticket written at final failure. The incident-time boundary applies to `Agent.investigate()` and the API's `/investigate`, not to MCP. Every tool declares all four MCP tool annotations (`readOnlyHint`, `destructiveHint`, `idempotentHint`, `openWorldHint`) so a host can warn before a call: five tools are read-only, and `open_ticket` only queues a request for human approval (tested in `tests/test_mcp_annotations.py`). The server is listed on the [M8ven MCP Trust Index](https://m8ven.ai/mcp/muskaanmahadik10/factory-copilot), whose static analysis reported no credential exfiltration, sensitive file access or obfuscation.
 
 ## Repository map
 
@@ -126,7 +126,7 @@ factory_copilot/
   mcp_server.py
 dashboard/app.py    Streamlit
 evaluation/         cases.py (30 incidents with ground truth) · run.py (rules / llm_only / agent, results table)
-tests/              61 tests (data, analytics, incident cutoff, retrieval, guardrails, tools, agent, scoring, API, audit regressions)
+tests/              63 tests (data, analytics, incident cutoff, retrieval, guardrails, tools, agent, scoring, API, audit regressions)
 docs/DESIGN.md      the design document this was built from
 ```
 
@@ -142,6 +142,10 @@ docs/DESIGN.md      the design document this was built from
 - A real-model injection test on held-out machines, and a larger frozen case set that was not used during development.
 - Measure what matters to a shift lead: time to a verified diagnosis with and without the copilot, against the rules workflow.
 - A proper LLM-as-judge for report *quality* (evidence sufficiency), not just root-cause/SOP/action accuracy.
+
+## License
+
+MIT, see [LICENSE](LICENSE).
 
 ## Author
 
