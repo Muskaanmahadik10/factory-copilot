@@ -4,7 +4,7 @@
 
 Built as a portfolio project for AI-engineer roles in manufacturing. Everything runs on a laptop with no API key (deterministic mock mode); with a key it uses real models through any OpenAI-compatible or Anthropic endpoint.
 
-![CI](https://github.com/Muskaanmahadik10/factory-copilot/actions/workflows/ci.yml/badge.svg) [![M8ven](https://m8ven.ai/badge/mcp/muskaanmahadik10/factory-copilot?variant=verified)](https://m8ven.ai/mcp/muskaanmahadik10/factory-copilot?s=readme) ![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)
+![CI](https://github.com/Muskaanmahadik10/factory-copilot/actions/workflows/ci.yml/badge.svg) [![M8ven Score](https://m8ven.ai/badge/mcp/muskaanmahadik10-factory-copilot-tls60g?v=0794f1b750d7ebcd499e5ec963341099)](https://m8ven.ai/mcp/muskaanmahadik10-factory-copilot-tls60g?s=readme) ![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)
 
 ## What it does
 
