@@ -7,3 +7,5 @@ artifacts/models.pkl
 data/generated/
 .pytest_cache/
 *.egg-info/
+coverage.xml
+.coverage
